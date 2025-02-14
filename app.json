@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ClosetMATE_Front",
-    "slug": "ClosetMATE_Front",
+    "name": "ClosetMATE",
+    "slug": "closetmate",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -28,9 +28,20 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          // "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts":[
+            "./assets/fonts/antic-didone-v16-latin-regular.ttf",
+            "./assets/fonts/limelight-v19-latin-regular.ttf",
+            "./assets/fonts/philosopher-v20-cyrillic_latin-700.ttf",
+            "./assets/fonts/philosopher-v20-cyrillic_latin-regular.ttf"
+          ]
         }
       ]
     ],
