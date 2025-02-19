@@ -4,15 +4,12 @@ import {Tabs} from 'expo-router';
 import icons from '@/constants/icons';
 
 const TabIcon = ({
-    focused, icon, title,
+    focused, icon
 }:{
-    focused:boolean; icon:any; title:string;
+    focused:boolean; icon:any;
 }) => (
     <View className="flex-1 mt-3 flex items-center">
         <Image source={icon} tintColor={focused ? '#000' : '#636363'} resizeMode="contain" className="size-7"/>
-        {/* <Text className={`${focused ? 'text-primary-300 font-rubik-medium' : 'text-black-200 font-rubik'} text-xs w-full text-center mt-1`}>
-            {title}
-        </Text> */}
     </View>
 )
 
@@ -33,7 +30,7 @@ const TabsLayout = () => {
                   title: "Wardrobe1",
                   headerShown: false,
                   tabBarIcon: ({ focused }) => (
-                    <TabIcon focused={focused} icon={icons.closet} title="Wardrobe2" />
+                    <TabIcon focused={focused} icon={icons.closet} />
                   ),
                 }}
             /> 
@@ -43,7 +40,7 @@ const TabsLayout = () => {
                   title: "Home",
                   headerShown: false,
                   tabBarIcon: ({ focused }) => (
-                    <TabIcon focused={focused} icon={icons.calendar} title="Home" />
+                    <TabIcon focused={focused} icon={icons.calendar} />
                   ),
                 }}
             />
@@ -53,7 +50,7 @@ const TabsLayout = () => {
                   title: "Profile",
                   headerShown: false,
                   tabBarIcon: ({ focused }) => (
-                    <TabIcon focused={focused} icon={icons.profile} title="Profile" />
+                    <TabIcon focused={focused} icon={icons.profile}  />
                   ),
                 }}
             />

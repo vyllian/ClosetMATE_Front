@@ -8,13 +8,14 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "backgroundColor": "#FFDCEF",
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFDCEF"
       }
     },
     "web": {
@@ -30,7 +31,7 @@
           "image": "./assets/images/splash-icon.png",
           // "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#FFDCEF"
         }
       ],
       [
@@ -42,6 +43,13 @@
             "./assets/fonts/philosopher-v20-cyrillic_latin-700.ttf",
             "./assets/fonts/philosopher-v20-cyrillic_latin-regular.ttf"
           ]
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission":"Select and upload images.",
+          "cameraPermission":"Allow $(PRODUCT_NAME) to access your camera."
         }
       ]
     ],

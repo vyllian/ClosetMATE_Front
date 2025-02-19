@@ -12,20 +12,18 @@ module.exports = {
       },
       colors:{
         primary:{
-          100:'#0061FF0A',
-          200:'#0061FF1A',
-          300:'#0061FF',
+          DEFAULT:'#FFDCEF'
         },
         accent:{
-          100:'#FBFBFD',
+          100:'#FB3F4A',
         },
         black:{
           DEFAULT:'#000000',
-          100:'#8C8E98',
-          200:'#666876',
-          300:'#1911D31',
+          100:'#636363',
+          200:'#828282',
+          300:'#D9D9D9',
         },
-        danger: '#F75555'
+        danger: '#BC4444'
       }
     },
   },
