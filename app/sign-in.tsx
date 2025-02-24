@@ -73,7 +73,7 @@ const SignIn = () =>{
                 </View>
                 <View className='flex items-center gap-5'>
                     <Text className=' font-philosopher text-xl'>Не зареєстровані? <Link href='/sign-up-email' className='font-philosopher-bold'>Створіть акаунт!</Link></Text>
-                    <CustomInput label='Електронна пошта:' placeholder='user@gmail.com' value={email} setValue={setEmail} />
+                    <CustomInput label='Електронна пошта:' placeholder='user@gmail.com' value={email} setValue={setEmail} type='email' />
                     <CustomPassword label='Пароль:' placeholder='Pass1234' value={password} setValue={setPassword} />
                     <MainButton text='Увійти' onPress={handleLogin} />
                     <Text className='text-center font-philosopher text-bage text-black-200'>Натискаючи «Увійти», ви погоджуєтеся з нашими 

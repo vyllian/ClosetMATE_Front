@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "@/lib/useAuth";
 import { useRouter } from "expo-router";
+import { ProfileProvider } from "@/components/ProfileContext";
 
 export default function AppLayout() {
   const { auth, loading } = useAuth();
@@ -28,5 +29,9 @@ export default function AppLayout() {
     router.replace('/sign-in');
   }
 
-  return <Slot />;
+  return (
+    <ProfileProvider>
+      <Slot />
+    </ProfileProvider>
+  );
 }

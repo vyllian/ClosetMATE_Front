@@ -2,6 +2,7 @@ import { View, Text, Image } from "react-native";
 import React from 'react';
 import {Tabs} from 'expo-router';
 import icons from '@/constants/icons';
+import { ProfileProvider } from "@/components/ProfileContext";
 
 const TabIcon = ({
     focused, icon
@@ -14,15 +15,16 @@ const TabIcon = ({
 )
 
 const TabsLayout = () => {
-    return(
+  return(
+      <ProfileProvider>
         <Tabs
         screenOptions={{
-            tabBarShowLabel:false,
-            tabBarStyle:{
-                backgroundColor:'#ffffff',
-                position:'absolute',
-                minHeight:60,
-            }
+          tabBarShowLabel:false,
+          tabBarStyle:{
+            backgroundColor:'#ffffff',
+            position:'absolute',
+            minHeight:60,
+          }
         }}>
             <Tabs.Screen
                 name="wardrobe"
@@ -33,7 +35,7 @@ const TabsLayout = () => {
                     <TabIcon focused={focused} icon={icons.closet} />
                   ),
                 }}
-            /> 
+                /> 
             <Tabs.Screen
                 name="index"
                 options={{
@@ -43,7 +45,7 @@ const TabsLayout = () => {
                     <TabIcon focused={focused} icon={icons.calendar} />
                   ),
                 }}
-            />
+                />
             <Tabs.Screen
                 name="profile"
                 options={{
@@ -53,8 +55,9 @@ const TabsLayout = () => {
                     <TabIcon focused={focused} icon={icons.profile}  />
                   ),
                 }}
-            />
-        </Tabs>
+                />
+          </Tabs>
+        </ProfileProvider>
     )
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, KeyboardAvoidingView, Platform, ScrollView, Pressable, TextInput, TouchableHighlight, Image, Alert, ActivityIndicator } from 'react-native';
 import { Link, router } from 'expo-router';
 import { MainButton } from '@/components/customButton';
@@ -16,11 +16,15 @@ import { API } from '@/constants/api';
 import { useAuth } from '@/lib/useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '@/lib/useUser';
+import { useProfile } from '@/components/ProfileContext';
 
-const SignUpProfile = () => {
+
+const EditProfile = () => {
     const credentials = useAuth().auth;
     const { user, loading:userLoading, error } = useUser();
     const [loading, setLoading] = useState(false);
+    const {profile, loading:profileLoadinf  } = useProfile();
+    
 
     const [username, setUsername]=useState('');
     const [bio, setBio]=useState<string | null>(null);
@@ -38,6 +42,11 @@ const SignUpProfile = () => {
         {'key':'MALE', 'value':'Чоловіча'},
         {'key':'OTHER', 'value':'Інша'},
     ]
+
+    useEffect(()=>{
+        setUsername(profile.username);
+        
+    });
 
     const toggleDatepicker = () =>{
         setShowPicker(!showPicker);
@@ -124,9 +133,7 @@ const SignUpProfile = () => {
             return;
         } 
         setAllComplete(true);
-        let imgName = null;
         let imgUrl=null;
-        let urlExp = null;
         console.log('btn pressed2')
         setLoading(true);
         if (image) {
@@ -146,17 +153,13 @@ const SignUpProfile = () => {
                 });
                 console.log('image response: '+response)
                 console.log("image response status:", response.status);
-                console.log("image response headers:", response.headers);
+            console.log("image response headers:", response.headers);
                 if (!response.ok) {
                     throw new Error('Помилка завантаження фото');
                 }
     
-                const responseJSON = await response.json();
-                console.log('Фото завантажено:', responseJSON.toString());
-                imgName = responseJSON.name;
-                imgUrl = responseJSON.publicUrl;
-                urlExp = responseJSON.expirationDate;
-                console.log('Фото завантажено:', responseJSON.toString());
+                imgUrl = await response.text();
+                console.log('Фото завантажено:', imgUrl);
             } catch (error) {
                 console.error('Помилка при завантаженні фото:', error);
             }
@@ -165,16 +168,13 @@ const SignUpProfile = () => {
         
         try {
             const profile ={
-                "image":imgName,
+                "image":imgUrl,
                 "username": username,
                 "bio":bio,
                 "gender":gender,
                 "dateOfBirth":dateOfBirth,
-                "publicUrl":imgUrl,
-                "urlExpiryDate": urlExp,
                 "user":user,
             }
-            console.log(profile);
             
             const response = await fetch(API+'/profile/add',{
                 method: 'POST',
@@ -184,9 +184,6 @@ const SignUpProfile = () => {
                 },
                 body: JSON.stringify(profile),
             });
-            console.log('image response: '+response)
-            console.log("image response status:", response.status);
-            console.log("image response headers:", response.headers);
             if (!response.ok) {
                 throw new Error('Помилка створення профілю');
             }
@@ -231,9 +228,9 @@ const SignUpProfile = () => {
                 <ScrollView contentContainerStyle={{ height:"100%", justifyContent:'flex-start', alignContent:'center' }} >
                     
                     <View className='flex items-center gap-2 relative'>
-                        <TouchableHighlight className='mt-16 mb-8 items-end relative' onPress={toggleImgOptions} underlayColor='#fff' activeOpacity={0.2}>
+                        <TouchableHighlight className='mt-16 mb-8 items-end relative size-fit rounded-full' underlayColor='#D9D9D9' onPress={toggleImgOptions}>
                             <View className='items-end relative'>
-                                <Image source={image? {uri: image}: icons.avatar} className='size-36 rounded-full border-white border-solid border-4' resizeMode='contain' />
+                                <Image source={image? {uri: image}: profile.image} className='size-36 rounded-full border-white border-solid border-4' resizeMode='contain' />
                                 <Feather name="edit-3" size={24} color="black" className='absolute bottom-2 right-2' />
                             </View>
                         </TouchableHighlight>
@@ -284,4 +281,4 @@ const SignUpProfile = () => {
     )
 }
 
-export default SignUpProfile;
+export default EditProfile;
