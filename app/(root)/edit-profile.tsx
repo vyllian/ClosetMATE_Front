@@ -11,6 +11,7 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as ImagePicker from 'expo-image-picker';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import { API } from '@/constants/api';
 
 import { useAuth } from '@/lib/useAuth';
@@ -45,8 +46,11 @@ const EditProfile = () => {
 
     useEffect(()=>{
         setUsername(profile.username);
-        
-    });
+        setBio(profile.bio || '');
+        setGender(profile.gender);
+        setImage(profile.publicUrl || null);
+        setDateOfBirth(profile.dateOfBirth);
+    }, []);
 
     const toggleDatepicker = () =>{
         setShowPicker(!showPicker);
@@ -125,24 +129,20 @@ const EditProfile = () => {
     };
 
     const submit = async()=>{
-       console.log('btn pressed')
-       console.log(gender);
         if (!username || !gender || !dateOfBirth){
             setAllComplete(false);
-            console.log('why are you here')
             return;
         } 
         setAllComplete(true);
         let imgUrl=null;
-        console.log('btn pressed2')
+        let imgName = null;
+        let urlExp=null;
         setLoading(true);
         if (image) {
-            console.log('image is here '+image)
             try {
                 const formData = new FormData();
                 
                 formData.append('file', { uri: image, name: 'img.png', type: 'image/png' } as any);
-                console.log('image is ready')
                 const response = await fetch(API+'/profile/uploadPhoto', {
                     method: 'POST',
                     headers: {
@@ -151,64 +151,79 @@ const EditProfile = () => {
                     },
                     body: formData,
                 });
-                console.log('image response: '+response)
-                console.log("image response status:", response.status);
-            console.log("image response headers:", response.headers);
+                
                 if (!response.ok) {
                     throw new Error('Помилка завантаження фото');
                 }
     
-                imgUrl = await response.text();
-                console.log('Фото завантажено:', imgUrl);
+                const responseJSON = await response.json();
+                imgName = responseJSON.name;
+                imgUrl = responseJSON.publicUrl;
+                urlExp = responseJSON.expirationDate;
             } catch (error) {
                 console.error('Помилка при завантаженні фото:', error);
             }
         }
-        console.log('profile?')
         
         try {
-            const profile ={
-                "image":imgUrl,
+            const newProfile ={
+                "image":imgName,
                 "username": username,
                 "bio":bio,
                 "gender":gender,
                 "dateOfBirth":dateOfBirth,
+                "publicUrl":imgUrl,
+                "urlExpiryDate": urlExp,
                 "user":user,
             }
+            console.log(newProfile);
             
-            const response = await fetch(API+'/profile/add',{
-                method: 'POST',
+            const response = await fetch(API+'/profile/edit/'+profile.id,{
+                method: 'PUT',
                 headers: {
                      'Authorization': `Basic ${credentials}`,
                      'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(profile),
+                body: JSON.stringify(newProfile),
             });
             if (!response.ok) {
-                throw new Error('Помилка створення профілю');
+                throw new Error('Помилка edit профілю');
             }
-
-            let id= await response.json();
-            console.log(id);
-            const response2 = await fetch(API+'/user/'+user.id+'/add_profile',{
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Basic ${credentials}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(id),
-            });
-            if (!response2.ok) {
-                throw new Error('Помилка add профілю');
-            }
-            Alert.alert('Профіль створено успішно!');
-            await AsyncStorage.setItem('selectedProfileId', id);
-                router.push('/');
+            //await AsyncStorage.setItem('selectedProfileId', profile.id);
+            router.push('/profile');
         } catch (error) {
             console.error('Помилка при створенні профілю:', error);
         }finally{
             setLoading(false);
         }
+
+    };
+
+    const deleteProfile = async()=>{
+        Alert.alert(
+            "Видалити цей профіль?",
+            "Цю дію неможливо скасувати.",
+            [
+                {text:"Ок", onPress: async()=>{
+                    try {
+                        const response = await fetch(API+'/profile/delete/'+profile.id,{
+                            method: 'DELETE',
+                            headers: {
+                                 'Authorization': `Basic ${credentials}`
+                            },
+                        }); 
+                        if (!response.ok) {
+                            throw new Error('Помилка delete профілю');
+                        }
+                    } catch (error) {
+                        console.error('Помилка при видаленні профілю:', error);
+                    }finally{
+                        router.push('/choose-profile');
+                    }
+                }},
+                {text:"Скасувати",style:'cancel'}
+            ]
+        );
 
     };
 
@@ -220,40 +235,48 @@ const EditProfile = () => {
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 className="flex-1"
             >
-                {loading && (
+                {loading ? (
                     <View className="absolute top-0 left-0 right-0 bottom-0 bg-primary flex items-center justify-center z-50">
                         <ActivityIndicator size="large" color="#828282" />
                     </View>
-                )}
+                ):(
                 <ScrollView contentContainerStyle={{ height:"100%", justifyContent:'flex-start', alignContent:'center' }} >
                     
-                    <View className='flex items-center gap-2 relative'>
-                        <TouchableHighlight className='mt-16 mb-8 items-end relative size-fit rounded-full' underlayColor='#D9D9D9' onPress={toggleImgOptions}>
+                    <View className='flex items-center gap-2 relative w-full'>
+                        <View className='flex-row justify-between items-center w-full mt-4 '>
+                            <TouchableHighlight onPress={()=>router.push('/(root)/(tabs)/profile')} underlayColor='#fbcce7' className='size-fit'>
+                                <AntDesign name="arrowleft" size={32} color="black" />
+                            </TouchableHighlight>
+                            <TouchableHighlight onPress={()=>deleteProfile()} underlayColor='#fbcce7' className=''>
+                                <MaterialCommunityIcons name="trash-can-outline" size={32} color="#bc4444" />
+                            </TouchableHighlight>
+                        </View>
+                        <TouchableHighlight className='mt-14 mb-8 items-end relative size-fit rounded-full' underlayColor='#D9D9D9' onPress={toggleImgOptions}>
                             <View className='items-end relative'>
-                                <Image source={image? {uri: image}: profile.image} className='size-36 rounded-full border-white border-solid border-4' resizeMode='contain' />
+                                <Image source={image? {uri: image}: icons.avatar} className='size-36 rounded-full border-white border-solid border-4' resizeMode='contain' />
                                 <Feather name="edit-3" size={24} color="black" className='absolute bottom-2 right-2' />
                             </View>
                         </TouchableHighlight>
                         {showImgOptions && (
-                            <View className='flex-column gap-6 bg-white rounded-xl p-4 absolute top-7 left-14'>
-                                <TouchableHighlight className='bg-black-300 p-2 rounded-lg' onPress={()=>uploadImage('camera')}>
+                            <View className='flex-column gap-6 bg-white rounded-xl p-4 absolute top-20 left-14'>
+                                <TouchableHighlight className='bg-black-300 p-2 rounded-lg' underlayColor='#fbcce7' onPress={()=>uploadImage('camera')}>
                                     <Feather name="camera" size={24} color="black" />
                                 </TouchableHighlight> 
-                                <TouchableHighlight  className='bg-black-300 p-2 rounded-lg' onPress={()=>uploadImage('gallery')}>
+                                <TouchableHighlight  className='bg-black-300 p-2 rounded-lg' underlayColor='#fbcce7' onPress={()=>uploadImage('gallery')}>
                                     <MaterialIcons name="insert-photo" size={24} color="black"  />
                                 </TouchableHighlight>    
-                                <TouchableHighlight  className='bg-black-300 p-2 rounded-lg' onPress={()=>deleteImage()}>
+                                <TouchableHighlight  className='bg-black-300 p-2 rounded-lg' underlayColor='#fbcce7' onPress={()=>deleteImage()}>
                                     <MaterialCommunityIcons name="trash-can-outline" size={24} color="black" />
                                 </TouchableHighlight>       
                             </View>                     
                         )}  
-                        <Text className=' font-philosopher-bold text-2xl'>Заповніть поля</Text>
+                        <Text className=' font-philosopher-bold text-2xl'>Відредагуйте</Text>
                         <CustomInput label='Назва профілю:*' placeholder='username' value={username} setValue={setUsername} />
                         <CustomInput label='Опис:' placeholder='опис' value={bio} setValue={setBio} />
                         <View className="my-0">
                             <Text className="font-philosopher text-xl">Дата народження:*</Text>
                             {showPicker && (
-                                <DateTimePicker mode='date' display='spinner' value={date} onChange={onChange} minimumDate={new Date(1925,0,1)} maximumDate={new Date(2015,0,1)} textColor='black'  />
+                                <DateTimePicker mode='date' display='spinner' value={date} onChange={onChange} minimumDate={new Date(1925,0,1)} maximumDate={new Date()} textColor='black'  />
                             )}
                             {showPicker && Platform.OS==='ios'&&(
                                 <View>
@@ -270,12 +293,16 @@ const EditProfile = () => {
                         </View>
                         <View className="mb-4">
                             <Text className="font-philosopher text-xl">Стать:*</Text>
-                            <SelectList data={genderOptions} setSelected={(val:string) => setGender(val)} placeholder='Стать' fontFamily='philosopher' search={false} boxStyles={{backgroundColor:"white", borderColor:"#D9D9D9", paddingHorizontal:12, width:"100%" }} dropdownStyles={{backgroundColor:"white"}} inputStyles={{fontSize:18}} />
+                            <SelectList data={genderOptions} setSelected={(val:string) => setGender(val)} defaultOption={{ key: profile.gender, value: genderOptions.find(option => option.key === profile.gender)?.value || "Невідомо" }}  placeholder='Стать' fontFamily='philosopher' search={false} boxStyles={{backgroundColor:"white", borderColor:"#D9D9D9", paddingHorizontal:12, width:"100%" }} dropdownStyles={{backgroundColor:"white"}} inputStyles={{fontSize:18}} />
                         </View>
                         {!allComplete &&( <Text className="absolute top-full font-philosopher text-red-500 text-xl">Заповніть обов'язкові (*) поля!</Text> )}
-                        <MainButton text='Створити профіль' onPress={()=>submit()} />
+                        <MainButton text='Внести зміни' onPress={()=>submit()} />
                     </View>
+                    {/* <View className='absolute bottom-0 w-full'>
+                        <MainButton text='Видалити профіль' onPress={()=>deleteProfile()} color='#bc4444' />
+                    </View> */}
                 </ScrollView>
+                )}
             </KeyboardAvoidingView>
         </SafeAreaView>
     )

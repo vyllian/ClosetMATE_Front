@@ -30,16 +30,19 @@ const Profile = () => {
     // const [itemsShown, setItemsShown] = useState(false);
 
   
-    if (profile) {console.log('profile '+profile); console.log(profile)};
+   
     
     useEffect(()=>{
+        if(!profile){
+            return;
+        }
         if (!profile.image) {
             setImageLoading(false);
             return;
         }
         if(moment(profile.urlExpiryDate)>moment()){
             setImage(profile.publicUrl);
-            setImageLoading(false);
+//            setImageLoading(false);
         }else{
             const fetchUrl = async()=>{
                 try {
@@ -62,8 +65,10 @@ const Profile = () => {
             }
             fetchUrl();
         }
+        setImageLoading(false);
+
         
-    }, [profile.image, profile.urlExpiryDate]);
+    }, [profile]);
 
     
     const toggleSettings = async()=>{
@@ -82,30 +87,32 @@ const Profile = () => {
 
     return (
         <SafeAreaView className=' h-full bg-primary '>
-            {loading || imageLoading && (
+            {loading || imageLoading ? (
                 <View className="absolute top-0 left-0 right-0 bottom-0 bg-primary flex items-center justify-center z-50">
                     <ActivityIndicator size="large" color="#828282" />
                 </View>
-            )}
+            ):(
             <ScrollView contentContainerStyle={{ height:"100%", justifyContent:'center', alignContent:'center' }} >
                 <View className='mx-4 flex-row items-start justify-between mb-2'>
-                    <Image source={icons.logo} className='size-24' resizeMode='contain' />
-                    <TouchableHighlight onPress={toggleSettings} underlayColor='#D9D9D9' className='size-fit m-4'>
+                    <TouchableHighlight  underlayColor='#fbcce7' onPress={()=>router.push('/')}>
+                        <Image source={icons.logo} className='size-24' resizeMode='contain' />
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={toggleSettings} underlayColor='#fbcce7' className='size-fit m-4'>
                         <Ionicons name="settings-outline" size={32} color="black" />
                     </TouchableHighlight>
                 </View>
                 {setShown && (
                     <View className='bg-white rounded-xl w-68 px-3 py-2 absolute top-14 right-12 z-50'>
-                        <TouchableHighlight onPress={()=>router.push('/edit-profile')} className='border-black-300 border-b pb-1'>
+                        <TouchableHighlight onPress={()=>{router.push('/edit-profile');}} underlayColor='#d9d9d9' className='border-black-300 border-b pb-1'>
                             <Text className='font-philosopher text-xl'>Редагувати профіль</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight onPress={()=>router.push('/sign-up-profile')} className='border-black-300 border-b py-1'>
+                        <TouchableHighlight onPress={()=>router.push('/sign-up-profile')}  underlayColor='#D9D9D9' className='border-black-300 border-b py-1'>
                             <Text className='font-philosopher text-xl'>Додати профіль</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight onPress={()=>router.push('/edit-user')} className='border-black-300 border-b py-1'>
+                        <TouchableHighlight onPress={()=>router.push('/edit-user')}  underlayColor='#D9D9D9' className='border-black-300 border-b py-1'>
                             <Text className='font-philosopher text-xl'>Налаштування користувача</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight onPress={handleLogout} className='pt-1'>
+                        <TouchableHighlight onPress={handleLogout}  underlayColor='#D9D9D9' className='pt-1'>
                             <View className='flex-row justify-between items-center'>
                                 <Text className='font-philosopher text-xl text-danger'>Вийти</Text>
                                 <MaterialIcons name="logout" size={20} color="#BC4444" />
@@ -135,6 +142,7 @@ const Profile = () => {
 
                 </View>
             </ScrollView>
+            )}
         </SafeAreaView>
     )
 }

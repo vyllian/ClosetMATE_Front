@@ -14,7 +14,7 @@ export default function Index() {
   const {profile, loading , setProfile } = useProfile();
   
   
-  if(profile) console.log(profile);
+//  if(profile) console.log(profile);
   const handleLogout = async () => {
         await removeAuth();
         Alert.alert('Вихід виконано');

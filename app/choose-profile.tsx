@@ -33,9 +33,6 @@ const ChooseProfile = () => {
     const newProfile = async () => {
         router.push('/sign-up-profile');
     }
-    const fff = async () => {
-        
-    }
 
     return ( 
         <SafeAreaView className='px-5 h-full bg-primary ' >

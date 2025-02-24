@@ -46,7 +46,7 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({children}) =>{
       };
 
       loadProfile();
-  }, [user, userLoading]);
+  }, [user, userLoading, profile]);
 
   return (
     <ProfileContext.Provider value={{ profile, loading, setProfile }}>
