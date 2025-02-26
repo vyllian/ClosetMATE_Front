@@ -23,6 +23,8 @@ import moment from 'moment';
 const Profile = () => {
     const {profile, loading  } = useProfile();
     const credentials = useAuth().auth;
+    const { user, loading:userLoading, error } = useUser();
+    
 
     const [image, setImage] =useState<string | null>(null); 
     const [imageLoading, setImageLoading] =useState(true); 
@@ -68,7 +70,7 @@ const Profile = () => {
         setImageLoading(false);
 
         
-    }, [profile]);
+    }, []);
 
     
     const toggleSettings = async()=>{
@@ -77,6 +79,7 @@ const Profile = () => {
 
     const handleLogout = async () => {
         await removeAuth();
+        await AsyncStorage.removeItem('user');
         Alert.alert('Вихід виконано');
         router.replace('/sign-in');
     };
@@ -106,11 +109,14 @@ const Profile = () => {
                         <TouchableHighlight onPress={()=>{router.push('/edit-profile');}} underlayColor='#d9d9d9' className='border-black-300 border-b pb-1'>
                             <Text className='font-philosopher text-xl'>Редагувати профіль</Text>
                         </TouchableHighlight>
+                        <TouchableHighlight onPress={()=>{router.push({pathname:'/choose-profile', params: { profiles: JSON.stringify(user.profiles)}})}} underlayColor='#d9d9d9' className='border-black-300 border-b pb-1'>
+                            <Text className='font-philosopher text-xl'>Перейти в інший профіль</Text>
+                        </TouchableHighlight>
                         <TouchableHighlight onPress={()=>router.push('/sign-up-profile')}  underlayColor='#D9D9D9' className='border-black-300 border-b py-1'>
                             <Text className='font-philosopher text-xl'>Додати профіль</Text>
                         </TouchableHighlight>
                         <TouchableHighlight onPress={()=>router.push('/edit-user')}  underlayColor='#D9D9D9' className='border-black-300 border-b py-1'>
-                            <Text className='font-philosopher text-xl'>Налаштування користувача</Text>
+                            <Text className='font-philosopher-bold text-xl'>Налаштування користувача</Text>
                         </TouchableHighlight>
                         <TouchableHighlight onPress={handleLogout}  underlayColor='#D9D9D9' className='pt-1'>
                             <View className='flex-row justify-between items-center'>

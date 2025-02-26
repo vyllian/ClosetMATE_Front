@@ -204,7 +204,7 @@ const EditProfile = () => {
             "Видалити цей профіль?",
             "Цю дію неможливо скасувати.",
             [
-                {text:"Ок", onPress: async()=>{
+                {text:"Видалити",style:'destructive', onPress: async()=>{
                     try {
                         const response = await fetch(API+'/profile/delete/'+profile.id,{
                             method: 'DELETE',
@@ -270,7 +270,7 @@ const EditProfile = () => {
                                 </TouchableHighlight>       
                             </View>                     
                         )}  
-                        <Text className=' font-philosopher-bold text-2xl'>Відредагуйте</Text>
+                        <Text className=' font-philosopher-bold text-2xl'>Дані про профіль</Text>
                         <CustomInput label='Назва профілю:*' placeholder='username' value={username} setValue={setUsername} />
                         <CustomInput label='Опис:' placeholder='опис' value={bio} setValue={setBio} />
                         <View className="my-0">

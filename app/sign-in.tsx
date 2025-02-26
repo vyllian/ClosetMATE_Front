@@ -50,7 +50,7 @@ const SignIn = () =>{
                 router.push('/(root)/(tabs)');
             } else {
                 // Якщо немає профілів або їх більше одного — йдемо на сторінку вибору профілю
-                router.push({pathname:'/choose-profile', params: { profiles: profiles }});
+                router.push({pathname:'/choose-profile', params: { profiles: JSON.stringify(profiles) }});
             }
         } catch (error:any) {
             Alert.alert('Помилка входу', error.message);

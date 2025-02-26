@@ -116,26 +116,20 @@ const SignUpProfile = () => {
     };
 
     const submit = async()=>{
-       console.log('btn pressed')
-       console.log(gender);
+    
         if (!username || !gender || !dateOfBirth){
             setAllComplete(false);
-            console.log('why are you here')
             return;
         } 
         setAllComplete(true);
         let imgName = null;
         let imgUrl=null;
         let urlExp = null;
-        console.log('btn pressed2')
         setLoading(true);
         if (image) {
-            console.log('image is here '+image)
             try {
-                const formData = new FormData();
-                
+                const formData = new FormData();                
                 formData.append('file', { uri: image, name: 'img.png', type: 'image/png' } as any);
-                console.log('image is ready')
                 const response = await fetch(API+'/profile/uploadPhoto', {
                     method: 'POST',
                     headers: {
@@ -144,25 +138,18 @@ const SignUpProfile = () => {
                     },
                     body: formData,
                 });
-                console.log('image response: '+response)
-                console.log("image response status:", response.status);
-                console.log("image response headers:", response.headers);
                 if (!response.ok) {
                     throw new Error('Помилка завантаження фото');
                 }
     
                 const responseJSON = await response.json();
-                console.log('Фото завантажено:', responseJSON.toString());
                 imgName = responseJSON.name;
                 imgUrl = responseJSON.publicUrl;
                 urlExp = responseJSON.expirationDate;
-                console.log('Фото завантажено:', responseJSON.toString());
             } catch (error) {
                 console.error('Помилка при завантаженні фото:', error);
             }
-        }
-        console.log('profile?')
-        
+        }        
         try {
             const profile ={
                 "image":imgName,
@@ -174,37 +161,19 @@ const SignUpProfile = () => {
                 "urlExpiryDate": urlExp,
                 "user":user,
             }
-            console.log(profile);
-            
-            const response = await fetch(API+'/profile/add',{
-                method: 'POST',
-                headers: {
-                     'Authorization': `Basic ${credentials}`,
-                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(profile),
-            });
-            console.log('image response: '+response)
-            console.log("image response status:", response.status);
-            console.log("image response headers:", response.headers);
-            if (!response.ok) {
-                throw new Error('Помилка створення профілю');
-            }
-
-            let id= await response.json();
-            console.log(id);
-            const response2 = await fetch(API+'/user/'+user.id+'/add_profile',{
+        
+            const response2 = await fetch(API+'/user/'+user.id+'/add-profile',{
                 method: 'PATCH',
                 headers: {
                     'Authorization': `Basic ${credentials}`,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(id),
+                body: JSON.stringify(profile),
             });
             if (!response2.ok) {
                 throw new Error('Помилка add профілю');
             }
-            Alert.alert('Профіль створено успішно!');
+            let id= await response2.json();
             await AsyncStorage.setItem('selectedProfileId', id);
                 router.push('/');
         } catch (error) {

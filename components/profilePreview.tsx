@@ -6,21 +6,30 @@ export const ProfilePreview = ({
     image, username, onPress, newProfile
 }:{image?:string, username:string, onPress:() => void, newProfile?:boolean}) =>{
     return(
-        <View className='flex justify-center items-center w-32 gap-1'>
+        <View className='flex justify-center items-center w-32'>
             {newProfile ? (
-                <TouchableHighlight onPress={onPress} className='bg-black-300 p-3 rounded-full'>
-                    <MaterialCommunityIcons name="plus" size={40} color="white" />
+                <TouchableHighlight onPress={onPress} underlayColor='#fbcce7'>
+                    <View className='items-center justify-center'>
+                        <View className='bg-black-300 size-20 rounded-full items-center justify-center'>
+                            <MaterialCommunityIcons name="plus" size={44} color="white" />
+                        </View>
+                        <Text className='font-philosopher text-lg text-black-200 text-center'>{username}</Text>
+                    </View>
                 </TouchableHighlight>
             ) : (
-                <TouchableHighlight onPress={onPress}>
-                    {image ? (
-                        <Image source={{ uri: image }} style={{ width: 50, height: 50, borderRadius: 25 }} />
-                    ) : (
-                        <MaterialCommunityIcons name="star-face" size={24} color="black" />
-                    )}
+                <TouchableHighlight onPress={onPress} underlayColor='#fbcce7' >
+                    <View className=' '>
+                        <View className='size-20 bg-white rounded-full border-white border-2 items-center justify-center'>
+                        {image ? (
+                            <Image source={{ uri: image }} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                        ) : (
+                            <MaterialCommunityIcons name="star-face" size={44} color="black" className='' />
+                        )}
+                        </View>
+                        <Text className='font-philosopher-bold text-lg text-black text-center'>{username}</Text>
+                    </View>
                 </TouchableHighlight>
             )}
-            <Text className='font-philosopher text-lg text-black-200 text-center'>{username}</Text>
         </View>
     )
 

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getAuth } from '@/lib/authService';
 import { API } from '@/constants/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 export const useAuth = () => {
     const [auth, setAuth] = useState<string | null>(null);
@@ -21,7 +23,9 @@ export const useAuth = () => {
 export const fetchUserData = async () => {
     try {
         const credentials = await getAuth();
-        if (!credentials) throw new Error('Користувач не авторизований');
+        if (!credentials) {
+            Alert.alert("Здійсніть вхід ще раз."); 
+        }
 
         const response = await fetch(API+'/user/me', {
             method: 'GET',
@@ -31,18 +35,24 @@ export const fetchUserData = async () => {
         });
 
         if (!response.ok) throw new Error('Не вдалося отримати дані користувача');
+        const userData = await response.json();
 
-        return await response.json();
+        await AsyncStorage.setItem('user', JSON.stringify(userData));
+
+        return userData;
     } catch (error:any) {
         console.error('Помилка отримання користувача:', error.message);
-        return null;
+        // const storedUser = await AsyncStorage.getItem('user');
+        // return storedUser ? JSON.parse(storedUser) : null;
     }
 };
 
 export const fetchProfileData = async (id:string) => {
     try {
         const credentials = await getAuth();
-        if (!credentials) throw new Error('Користувач не авторизований');
+        if (!credentials) {
+            Alert.alert("Здійсніть вхід ще раз."); 
+        } 
 
         const response = await fetch(API+'/profile/'+id, {
             method: 'GET',
@@ -55,7 +65,7 @@ export const fetchProfileData = async (id:string) => {
 
         return await response.json();
     } catch (error:any) {
-        console.error('Помилка отримання профілю:', error.message);
+      //  console.error('Помилка отримання профілю:', error.message);
         return null;
     }
 };

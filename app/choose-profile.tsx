@@ -20,6 +20,8 @@ const ChooseProfile = () => {
         } catch (error) {
             console.error("Помилка парсингу profiles:", error);
         }
+    } else {
+        console.warn("Некоректний формат profiles:", profiles);
     }
 
     const openProfile = async (id: string) => {
@@ -39,10 +41,10 @@ const ChooseProfile = () => {
             <ScrollView contentContainerStyle={{ height:"100%", justifyContent:'flex-start', alignItems:'center' }} >
                 <Image source={icons.logo} className='size-44 my-16' resizeMode='contain' />
                 <Text className='text-2xl font-philosopher-bold text-black mb-8' >{parsedProfiles.length===0 ? "Потрібно створити профіль" : "Виберіть профіль"}</Text>
-                <View className='flex flex-row flex-wrap gap-3'>
+                <View className='flex flex-row flex-wrap justify-center items-center content-center gap-x-1 gap-y-2'>
                     {parsedProfiles.length > 0 && (
-                        parsedProfiles.map((profile: { image: string; username: string; id: string }) => (
-                            <ProfilePreview key={profile.id} image={profile.image} username={profile.username} onPress={() => openProfile(profile.id)} />
+                        parsedProfiles.map((profile: { publicUrl: string; username: string; id: string }) => (
+                            <ProfilePreview key={profile.id} image={profile.publicUrl} username={profile.username} onPress={() => openProfile(profile.id)} />
                         ))
                     )}
                     <ProfilePreview username='Новий профіль' onPress={newProfile} newProfile={true} />
