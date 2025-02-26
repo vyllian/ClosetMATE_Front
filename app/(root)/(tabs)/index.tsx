@@ -13,25 +13,22 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 export default function Index() {
   const {profile, loading , setProfile } = useProfile();
   const { user, loading:userLoading } = useUser();
-  if (!user && !userLoading){
-    Alert.alert("Потрібно оновити дані","Здійсніть вхід ще раз.",
-      [
-        {text:"Ок", onPress: async()=>{
-            await removeAuth();
-            await AsyncStorage.removeItem('user');
-            router.replace('/sign-in');
-        }}
-      ]
-    ); 
-
-  }
+  
+  useEffect(()=>{
+    if (!user && !userLoading){
+      removeAuth();
+      AsyncStorage.removeItem('user');
+     // router.replace('/sign-in');
+    }
+  },[]);
+  
   
   
 //  if(profile) console.log(profile);
   const handleLogout = async () => {
     await removeAuth();
     await AsyncStorage.removeItem('user');
-    Alert.alert('Вихід виконано');
+   // Alert.alert('Вихід виконано');
     router.replace('/sign-in');
   };
 

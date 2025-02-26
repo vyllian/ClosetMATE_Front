@@ -3,6 +3,7 @@ import { getAuth } from '@/lib/authService';
 import { API } from '@/constants/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { router } from 'expo-router';
 
 export const useAuth = () => {
     const [auth, setAuth] = useState<string | null>(null);
@@ -24,7 +25,8 @@ export const fetchUserData = async () => {
     try {
         const credentials = await getAuth();
         if (!credentials) {
-            Alert.alert("Здійсніть вхід ще раз."); 
+           // return;
+            router.replace('/sign-in');            
         }
 
         const response = await fetch(API+'/user/me', {
@@ -41,7 +43,7 @@ export const fetchUserData = async () => {
 
         return userData;
     } catch (error:any) {
-        console.error('Помилка отримання користувача:', error.message);
+        console.log('Помилка отримання користувача:', error.message);
         // const storedUser = await AsyncStorage.getItem('user');
         // return storedUser ? JSON.parse(storedUser) : null;
     }
@@ -51,7 +53,8 @@ export const fetchProfileData = async (id:string) => {
     try {
         const credentials = await getAuth();
         if (!credentials) {
-            Alert.alert("Здійсніть вхід ще раз."); 
+            return;
+          //  router.push('/sign-in');            
         } 
 
         const response = await fetch(API+'/profile/'+id, {

@@ -13,7 +13,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (!loading && !auth) {
-      router.replace('/sign-in');
+    //  router.replace('/sign-in');
     }
   }, [loading, auth, router]);
 
@@ -25,9 +25,6 @@ export default function AppLayout() {
     );
   }
 
-  if (!auth) {
-    router.replace('/sign-in');
-  }
 
   return (
     <ProfileProvider>

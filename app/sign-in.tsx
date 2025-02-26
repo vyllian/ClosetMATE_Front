@@ -14,46 +14,49 @@ const SignIn = () =>{
  
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
     const router = useRouter();
 
     const handleLogin = async () => {
+        setErrorMessage("");
         try {
             const credentials = btoa(`${email}:${password}`);
-
+            console.log('request');
             const response = await fetch(API+'/user/me', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Basic ${credentials}`
                 }
-            });
+            })
 
-            if (!response.ok) {
-                throw new Error('Неправильний email або пароль');
+            if (response.status === 401) {
+                throw new Error("Перевірте дані: неправильна пошта або пароль!");
+            } else if (!response.ok) {
+                throw new Error("Вибачте, сталася помилка на сервері, спробуйте пізніше");
             }
             await saveAuth(email, password); 
-           
+            
             const profilesResponse = await fetch(API + '/user/profiles', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Basic ${credentials}`
+                    'Authorization': `Basic ${credentials}`,
+                    "Accept": "application/json",
                 }
             });
-    
+            
             if (!profilesResponse.ok) {
                 throw new Error('Не вдалося отримати профілі');
             }
+           
             const profiles = await profilesResponse.json(); 
-            console.log(profiles)
             if (profiles.length === 1) {
-                console.log('sign-in: '+profiles[0].id);
                 await AsyncStorage.setItem('selectedProfileId', profiles[0].id);
                 router.push('/(root)/(tabs)');
             } else {
-                // Якщо немає профілів або їх більше одного — йдемо на сторінку вибору профілю
                 router.push({pathname:'/choose-profile', params: { profiles: JSON.stringify(profiles) }});
             }
         } catch (error:any) {
-            Alert.alert('Помилка входу', error.message);
+            setErrorMessage(error.message); 
         }
     };
 
@@ -75,7 +78,8 @@ const SignIn = () =>{
                     <Text className=' font-philosopher text-xl'>Не зареєстровані? <Link href='/sign-up-email' className='font-philosopher-bold'>Створіть акаунт!</Link></Text>
                     <CustomInput label='Електронна пошта:' placeholder='user@gmail.com' value={email} setValue={setEmail} type='email' />
                     <CustomPassword label='Пароль:' placeholder='Pass1234' value={password} setValue={setPassword} />
-                    <MainButton text='Увійти' onPress={handleLogin} />
+                    {errorMessage && <Text className="-mt-5 font-philosopher text-red-500 text-xl">{errorMessage}</Text>}
+                    <MainButton text='Увійти' onPress={()=>handleLogin()} />
                     <Text className='text-center font-philosopher text-bage text-black-200'>Натискаючи «Увійти», ви погоджуєтеся з нашими 
                         <Link href={'..'} className=' font-philosopher-bold text-black-100'> Умовами надання послуг</Link> та <Link href={'..'} className='text-black-100 font-philosopher-bold'>Політикою конфіденційності</Link>
                     </Text>
