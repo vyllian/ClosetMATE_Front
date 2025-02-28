@@ -1,6 +1,7 @@
 import { Text, TouchableHighlight, View } from "react-native";
 import React from 'react';
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 
 
@@ -19,11 +20,20 @@ export const MainButton = (
 
 export const PlusButton = ({size, onPress}:{size:number, onPress:()=>{}})=>{
     let btnSize = size>40 ? 'size-16' : 'size-10';
-
-    //console.log(btnSize);
     return(
         <TouchableHighlight onPress={onPress} underlayColor="#bc4444" className={`bg-accent-100 ${btnSize} items-center justify-center rounded-full self-end`}>
             <MaterialCommunityIcons name="plus" size={size} color="white" />
+        </TouchableHighlight>
+    )
+}
+
+export const SearchButton=({ onPress}:{ onPress:()=>{}})=>{
+    return(
+        <TouchableHighlight onPress={onPress} underlayColor="#d9d9d9" className="bg-white  rounded-full self-end px-2 py-1">
+            <View className="flex-row items-center justify-center gap-x-1.5">
+                <Text className="font-philosopher text-xl">Пошук</Text>
+                <Ionicons name="search" size={20} color="black" />        
+            </View>
         </TouchableHighlight>
     )
 }

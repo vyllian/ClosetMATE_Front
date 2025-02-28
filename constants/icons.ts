@@ -12,7 +12,7 @@ import likeEmpty from "@/assets/icons/likeEmpty.png";
 import likeFull from "@/assets/icons/likeFull.png";
 import logo from "@/assets/icons/logo.png";
 import logout from "@/assets/icons/logout.png";
-import otters from "@/assets/icons/otters.png";
+import outers from "@/assets/icons/otters.png";
 import outfit from "@/assets/icons/outfit.png";
 import pants from "@/assets/icons/pants.png";
 import plus from "@/assets/icons/plus.png";
@@ -37,7 +37,7 @@ export default{
     likeFull,
     logo,
     logout,
-    otters,
+    outers,
     outfit,
     pants,
     plus,

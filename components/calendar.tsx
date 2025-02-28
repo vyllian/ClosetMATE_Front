@@ -23,15 +23,10 @@ const primaryColor = "#FB3F4A";
 const textColor = "#000";
 const inactiveColor = "#D3D3D3";
 
-// Фейкові дані про заплановані образи
-const plannedOutfits: Record<string, { marked: boolean; dotColor: string }> = {
-  "2025-02-27": { marked: true, dotColor: primaryColor },
-  "2025-02-28": { marked: true, dotColor: primaryColor },
-};
 
 
-export const CalendarComponent = () => {
-    const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
+
+export const CalendarComponent = ({ plannedOutfits, selectedDate, setSelectedDate }:{ plannedOutfits:{}, selectedDate:string, setSelectedDate:(date:string) => void }) => {
 
   return (
     <View style={styles.container}>

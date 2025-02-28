@@ -12,10 +12,13 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import icons from "@/constants/icons";
 import { PlusButton } from "@/components/customButton";
 import { CalendarComponent } from "@/components/calendar";
+import dayjs from "dayjs";
 
 export default function Index() {
   const {profile, loading , setProfile } = useProfile();
   const { user, loading:userLoading } = useUser();
+  const [outfits, setOutfits] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   
   useEffect(()=>{
     if (!user && !userLoading){
@@ -23,6 +26,8 @@ export default function Index() {
       AsyncStorage.removeItem('user');
      // router.replace('/sign-in');
     }
+    //витягуємо айтфітс у форматі ["date": {outfit}]
+
   },[]);
   
   
@@ -56,10 +61,18 @@ export default function Index() {
                 Оберіть дату, щоб додати образ
               </Text>
             </View>
-            <CalendarComponent />
+            <CalendarComponent plannedOutfits={outfits} selectedDate={selectedDate} setSelectedDate={setSelectedDate}  />
           
-            <View className="bg-white w-full rounded-xl min-h-20">
-
+            <View className="bg-white w-full rounded-xl min-h-20 items-start justify-center py-2 px-8">
+              {outfits.length===0 ?(
+                <Text className="font-philosopher text-black-100 text-xl self-center">
+                  Немає запланованих образів
+                </Text>
+              ):(
+                <View>
+                  
+                </View>
+              )}
             </View>
             <PlusButton onPress={()=>tem()} size={44}/>
         </ScrollView>
