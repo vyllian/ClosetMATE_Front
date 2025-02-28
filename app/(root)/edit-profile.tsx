@@ -18,6 +18,7 @@ import { useAuth } from '@/lib/useAuth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '@/lib/useUser';
 import { useProfile } from '@/components/ProfileContext';
+import { TopNavigation } from '@/components/topNavigation';
 
 
 const EditProfile = () => {
@@ -243,14 +244,7 @@ const EditProfile = () => {
                 <ScrollView contentContainerStyle={{ height:"100%", justifyContent:'flex-start', alignContent:'center' }} >
                     
                     <View className='flex items-center gap-2 relative w-full'>
-                        <View className='flex-row justify-between items-center w-full mt-4 '>
-                            <TouchableHighlight onPress={()=>router.push('/(root)/(tabs)/profile')} underlayColor='#fbcce7' className='size-fit'>
-                                <AntDesign name="arrowleft" size={32} color="black" />
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={()=>deleteProfile()} underlayColor='#fbcce7' className=''>
-                                <MaterialCommunityIcons name="trash-can-outline" size={32} color="#bc4444" />
-                            </TouchableHighlight>
-                        </View>
+                        <TopNavigation arrowAction={()=>router.push('/(root)/(tabs)/profile')} binAction={()=>deleteProfile()} />
                         <TouchableHighlight className='mt-14 mb-8 items-end relative size-fit rounded-full' underlayColor='#D9D9D9' onPress={toggleImgOptions}>
                             <View className='items-end relative'>
                                 <Image source={image? {uri: image}: icons.avatar} className='size-36 rounded-full border-white border-solid border-4' resizeMode='contain' />

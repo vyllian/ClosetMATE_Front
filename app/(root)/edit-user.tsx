@@ -1,5 +1,6 @@
 import { MainButton } from '@/components/customButton';
 import { CustomInput, CustomPassword } from '@/components/customInput';
+import { TopNavigation } from '@/components/topNavigation';
 import { API } from '@/constants/api';
 import { removeAuth } from '@/lib/authService';
 import { useAuth } from '@/lib/useAuth';
@@ -161,14 +162,7 @@ const EditUser = () => {
                 </View>
             ):(
             <ScrollView contentContainerStyle={{ height:"100%", justifyContent:'center', alignContent:'center' }} >
-                <View className='flex-row justify-between items-center w-full absolute top-safe-or-0'>
-                    <TouchableHighlight onPress={()=>router.push('/(root)/(tabs)/profile')} underlayColor='#fbcce7' className='size-fit'>
-                        <AntDesign name="arrowleft" size={32} color="black" />
-                    </TouchableHighlight>
-                    <TouchableHighlight onPress={()=>deleteUser()} underlayColor='#fbcce7' className=''>
-                        <MaterialCommunityIcons name="trash-can-outline" size={32} color="#bc4444" />
-                    </TouchableHighlight>
-                </View>
+                <TopNavigation arrowAction={()=>router.push('/(root)/(tabs)/profile')} binAction={()=>deleteUser()} />
                 <View className='flex items-center gap-5'>
                     <Text className=' text-center font-philosopher-bold text-2xl'>Дані про користувача</Text>
                     <MainButton text="Оновити ім'я" onPress={()=>toggleName()} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, KeyboardAvoidingView,Alert, Platform } from "react-native";
+import { View, Text, ScrollView, KeyboardAvoidingView,Alert, Platform, TouchableHighlight } from "react-native";
 import { SafeAreaView  } from 'react-native-safe-area-context';
 import { Link, Redirect, useRouter } from 'expo-router';
 import { saveAuth } from '@/lib/authService';
@@ -59,6 +59,13 @@ const SignIn = () =>{
             setErrorMessage(error.message); 
         }
     };
+    // const resetPassword = async()=>{
+    //     try {
+            
+    //     } catch (error) {
+            
+    //     }
+    // }
 
 
     return(
@@ -80,6 +87,9 @@ const SignIn = () =>{
                     <CustomPassword label='Пароль:' placeholder='Pass1234' value={password} setValue={setPassword} />
                     {errorMessage && <Text className="-mt-5 font-philosopher text-red-500 text-xl">{errorMessage}</Text>}
                     <MainButton text='Увійти' onPress={()=>handleLogin()} />
+                    {/* <TouchableHighlight onPress={()=>resetPassword()}>
+                        <Text>Забули пароль?</Text>
+                    </TouchableHighlight> */}
                     <Text className='text-center font-philosopher text-bage text-black-200'>Натискаючи «Увійти», ви погоджуєтеся з нашими 
                         <Link href={'..'} className=' font-philosopher-bold text-black-100'> Умовами надання послуг</Link> та <Link href={'..'} className='text-black-100 font-philosopher-bold'>Політикою конфіденційності</Link>
                     </Text>
