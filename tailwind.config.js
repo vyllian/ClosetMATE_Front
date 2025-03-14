@@ -23,7 +23,8 @@ module.exports = {
           200:'#828282',
           300:'#D9D9D9',
         },
-        danger: '#BC4444'
+        danger: '#BC4444',
+        disabled: '#D9D9D9AA'
       }
     },
   },
