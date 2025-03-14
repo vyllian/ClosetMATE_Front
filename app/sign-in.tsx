@@ -91,7 +91,7 @@ const SignIn = () =>{
                         <Text>Забули пароль?</Text>
                     </TouchableHighlight> */}
                     <Text className='text-center font-philosopher text-bage text-black-200'>Натискаючи «Увійти», ви погоджуєтеся з нашими 
-                        <Link href={'..'} className=' font-philosopher-bold text-black-100'> Умовами надання послуг</Link> та <Link href={'..'} className='text-black-100 font-philosopher-bold'>Політикою конфіденційності</Link>
+                        <Link href={"/terms-of-use"} className=' font-philosopher-bold text-black-100'> Умовами надання послуг</Link> та <Link href={'/privacy-policy'} className='text-black-100 font-philosopher-bold'>Політикою конфіденційності</Link>
                     </Text>
                 </View>
             </ScrollView>

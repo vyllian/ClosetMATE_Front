@@ -63,7 +63,7 @@ const SignUpEmail = () => {
                     <CustomPassword label='Пароль:' placeholder='Pass1234' value={password} setValue={setPassword} type='password'/>
                     <MainButton text='Підтвердити' onPress={sendConfirmation} />
                     <Text className=' font-philosopher text-center text-black-200'>Натискаючи «Підтвердити», ви погоджуєтеся з нашими 
-                        <Link href={'..'} className=' font-philosopher-bold text-black'> Умовами надання послуг</Link> та <Link href={'..'} className='text-black font-philosopher-bold'>Політикою конфіденційності</Link>
+                        <Link href={'/terms-of-use'} className=' font-philosopher-bold text-black'> Умовами надання послуг</Link> та <Link href={'/privacy-policy'} className='text-black font-philosopher-bold'>Політикою конфіденційності</Link>
                     </Text>
                 </View>
                 
