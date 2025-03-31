@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAuth } from '@/lib/authService';
+import { getAuth, removeAuth } from '@/lib/authService';
 import { API } from '@/constants/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
@@ -12,10 +12,13 @@ export const useAuth = () => {
     useEffect(() => {
         const fetchAuth = async () => {
             const credentials = await getAuth();
+            console.log('Отримані креденшіали:', credentials);
             setAuth(credentials);
             setLoading(false);
         };
         fetchAuth();
+        console.log('useEf:'+auth);
+        
     }, []);
 
     return { auth, loading };
@@ -44,6 +47,9 @@ export const fetchUserData = async () => {
         return userData;
     } catch (error:any) {
         console.log('Помилка отримання користувача:', error.message);
+        // await removeAuth();
+        // await AsyncStorage.removeItem('user');
+        // router.replace('/sign-in');
         // const storedUser = await AsyncStorage.getItem('user');
         // return storedUser ? JSON.parse(storedUser) : null;
     }
@@ -68,7 +74,10 @@ export const fetchProfileData = async (id:string) => {
 
         return await response.json();
     } catch (error:any) {
-      //  console.error('Помилка отримання профілю:', error.message);
+       console.error('Помилка отримання профілю:', error.message);
+    //    await removeAuth();
+    //    await AsyncStorage.removeItem('user');
+    //    router.replace('/sign-in');
         return null;
     }
 };

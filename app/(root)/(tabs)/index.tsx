@@ -22,9 +22,11 @@ export default function Index() {
   
   useEffect(()=>{
     if (!user && !userLoading){
+      console.log('here');
+      
       removeAuth();
       AsyncStorage.removeItem('user');
-     // router.replace('/sign-in');
+      //router.replace('/sign-in');
     }
     //витягуємо айтфітс у форматі ["date": {outfit}]
 

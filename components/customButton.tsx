@@ -18,7 +18,7 @@ export const MainButton = (
         );
     }
 
-export const PlusButton = ({size, onPress}:{size:number, onPress:()=>{}})=>{
+export const PlusButton = ({size, onPress}:{size:number, onPress:()=>void})=>{
     let btnSize = size>40 ? 'size-16' : 'size-10';
     return(
         <TouchableHighlight onPress={onPress} underlayColor="#bc4444" className={`bg-accent-100 ${btnSize} items-center justify-center rounded-full self-end`}>
@@ -27,9 +27,9 @@ export const PlusButton = ({size, onPress}:{size:number, onPress:()=>{}})=>{
     )
 }
 
-export const SearchButton=({ onPress}:{ onPress:()=>{}})=>{
+export const SearchButton=({ onPress}:{ onPress:()=>void})=>{
     return(
-        <TouchableHighlight onPress={onPress} underlayColor="#d9d9d9" className="bg-white  rounded-full self-end px-2 py-1">
+        <TouchableHighlight onPress={onPress} underlayColor="#d9d9d9" className="bg-white rounded-lg self-end px-2 py-1">
             <View className="flex-row items-center justify-center gap-x-1.5">
                 <Text className="font-philosopher text-xl">Пошук</Text>
                 <Ionicons name="search" size={20} color="black" />        

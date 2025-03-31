@@ -243,8 +243,8 @@ const EditProfile = () => {
                 ):(
                 <ScrollView contentContainerStyle={{ height:"100%", justifyContent:'flex-start', alignContent:'center' }} >
                     
+                    <TopNavigation arrowAction={()=>router.push('/(root)/(tabs)/profile')} binAction={()=>deleteProfile()} />
                     <View className='flex items-center gap-2 relative w-full'>
-                        <TopNavigation arrowAction={()=>router.push('/(root)/(tabs)/profile')} binAction={()=>deleteProfile()} />
                         <TouchableHighlight className='mt-14 mb-8 items-end relative size-fit rounded-full' underlayColor='#D9D9D9' onPress={toggleImgOptions}>
                             <View className='items-end relative'>
                                 <Image source={image? {uri: image}: icons.avatar} className='size-36 rounded-full border-white border-solid border-4' resizeMode='contain' />

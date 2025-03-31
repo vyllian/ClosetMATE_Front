@@ -4,6 +4,8 @@ import { Calendar, DateData } from "react-native-calendars";
 import dayjs from "dayjs";
 
 import { LocaleConfig } from "react-native-calendars";
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from "react-native-reanimated";
+
 
 // Встановлення української локалізації для днів тижня
 LocaleConfig.locales["uk"] = {
@@ -26,10 +28,22 @@ const inactiveColor = "#D3D3D3";
 
 
 
-export const CalendarComponent = ({ plannedOutfits, selectedDate, setSelectedDate }:{ plannedOutfits:{}, selectedDate:string, setSelectedDate:(date:string) => void }) => {
+export const CalendarComponent = ({ plannedOutfits, selectedDate, setSelectedDate }:{ plannedOutfits:Record<string, { selected?: boolean }>, selectedDate:string, setSelectedDate:(date:string) => void }) => {
+  const [currentMonth, setCurrentMonth] = useState(selectedDate);
+  const translateX = useSharedValue(0);
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  const animateMonthChange = (direction: "left" | "right") => {
+    translateX.value = direction === "left" ? -100 : 100;
+    translateX.value = withSpring(0);
+  };
   return (
     <View style={styles.container}>
+      <Animated.View style={[animatedStyle]}>
+
       <Calendar
         locale={"uk"} 
         current={selectedDate}
@@ -77,8 +91,14 @@ export const CalendarComponent = ({ plannedOutfits, selectedDate, setSelectedDat
                     <Text style={styles.dayText}>{day.day}</Text>
                   </View>
                 );
-        }}          
+        }}   
+        onMonthChange={(month:{dateString: string}) => {
+          const newMonth = month.dateString;
+          animateMonthChange(new Date(newMonth) > new Date(currentMonth) ? "left" : "right");
+          setCurrentMonth(newMonth);
+        }}       
       />
+      </Animated.View>
     </View>
   );
 };

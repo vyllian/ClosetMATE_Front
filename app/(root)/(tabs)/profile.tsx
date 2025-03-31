@@ -14,7 +14,6 @@ import { useProfile } from '@/components/ProfileContext';
 import icons from '@/constants/icons';
 import { API } from '@/constants/api';
 import { useAuth } from '@/lib/useAuth';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import moment from 'moment';
 
@@ -22,41 +21,57 @@ import moment from 'moment';
 
 const Profile = () => {
     const {profile, loading  } = useProfile();
-    const credentials = useAuth().auth;
+    const {auth, loading:authLoading} = useAuth();
     const { user, loading:userLoading, error } = useUser();
     
 
     const [image, setImage] =useState<string | null>(null); 
     const [imageLoading, setImageLoading] =useState(true); 
     const [setShown, setSetShown] = useState(false);
+    const [favourite, setFavourite] = useState(false);
     // const [itemsShown, setItemsShown] = useState(false);
 
   
    
     
     useEffect(()=>{
-        if(!profile){
+        console.log('here');
+
+        if(!profile || authLoading){
             return;
         }
+        console.log('here1');
+
         if (!profile.image) {
             setImageLoading(false);
             return;
         }
         if(moment(profile.urlExpiryDate)>moment()){
+            setImageLoading(false);
             setImage(profile.publicUrl);
-//            setImageLoading(false);
+            console.log('here2');
+            
         }else{
             const fetchUrl = async()=>{
                 try {
+                    console.log("1");
+                    console.log(auth);
+                    
                     const response = await fetch(API+'/profile/'+profile.id+'/photoUrl',{
                         method: 'GET',
                             headers: {
-                                'Authorization': `Basic ${credentials}`,
+                                'Authorization': `Basic ${auth}`,
                             },
                     });
+                    console.log("2");
+                    
                     if (!response.ok){
+                        console.log(response.status);
+                        
                         throw new Error("Помилка отримання фото for profile");
                     }
+                    console.log("3");
+                    
                     const imageUrl = await response.text(); 
                     setImage(imageUrl);
                 } catch (error) {
@@ -66,15 +81,20 @@ const Profile = () => {
                 }
             }
             fetchUrl();
+            setImageLoading(false);
         }
-        setImageLoading(false);
+
+        //зафетчити аутфіти
 
         
-    }, []);
-
+    }, [authLoading, imageLoading]);
+    
     
     const toggleSettings = async()=>{
         setSetShown(!setShown);
+    }
+    const toggleFavOutfits = async()=>{
+        setFavourite(!favourite);
     }
 
     const handleLogout = async () => {
@@ -84,23 +104,25 @@ const Profile = () => {
         router.replace('/sign-in');
     };
 
-    const tempopary = async ()=>{
-
-    }
-
     return (
         <SafeAreaView className=' h-full bg-primary '>
-            {loading || imageLoading ? (
+            {loading || imageLoading || authLoading ? (
+                
                 <View className="absolute top-0 left-0 right-0 bottom-0 bg-primary flex items-center justify-center z-50">
+                    {/* <Text>
+        //  {loading ? "loading=true" : "loading=false"}{" "}
+        // {imageLoading ? "imageLoading=true" : "imageLoading=false"}{" "}
+        // {authLoading ? "authLoading=true" : "authLoading=false"} 
+    </Text> */}
                     <ActivityIndicator size="large" color="#828282" />
                 </View>
             ):(
             <ScrollView contentContainerStyle={{ height:"100%", justifyContent:'center', alignContent:'center' }} >
                 <View className='mx-4 flex-row items-start justify-between mb-2'>
-                    <TouchableHighlight  underlayColor='#fbcce7' onPress={()=>router.push('/')}>
+                    <TouchableHighlight  underlayColor='transperent' onPress={()=>router.push('/')}>
                         <Image source={icons.logo} className='size-24' resizeMode='contain' />
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={toggleSettings} underlayColor='#fbcce7' className='size-fit m-4'>
+                    <TouchableHighlight onPress={toggleSettings} underlayColor='transperent' className='size-fit m-4'>
                         <Ionicons name="settings-outline" size={32} color="black" />
                     </TouchableHighlight>
                 </View>
@@ -126,7 +148,7 @@ const Profile = () => {
                         </TouchableHighlight>
                     </View>
                 )}
-                <View className='items-center min-h-64 gap-2 border-b border-black-200'>
+                <View className='items-center min-h-64 gap-2 '>
                     {image ?(
                         <Image source={{uri: image}} className='size-36 rounded-full border-white border-solid border-4' resizeMode='contain' />
                     ):(
@@ -138,12 +160,27 @@ const Profile = () => {
                         @{profile.username}
                     </Text>
                     {profile.bio &&(
-                        <Text className='font-philosopher text-center text-base text-black-100 max-w-36'>
+                        <Text className='font-philosopher text-center text-base text-black-100 max-w-36 '>
                             {profile.bio}
                         </Text>
                     )}
                 </View>
+                <View className='bg-white border-b  border-black-200 flex-row justify-between items-center h-16 px-4'>
+                    <Text className='font-philosopher text-2xl'>
+                        Мої образи
+                    </Text>
+                    <TouchableHighlight onPress={toggleFavOutfits} underlayColor="transperent" className='rounded-full'>
+                        {favourite ? (
+                            <MaterialIcons name="favorite" size={32} color="#fb3f4a" />
+                        ):(
+                            <MaterialIcons name="favorite-border" size={32} color="#fb3f4a" />
+                        )}
+                    </TouchableHighlight>
+                </View>
                 <View className='flex-1 bg-white'>
+                    {/* {profile.profile_outfits.lenght===0 &&(
+                        <Text>Створіть образ</Text>
+                    )} */}
 
 
                 </View>

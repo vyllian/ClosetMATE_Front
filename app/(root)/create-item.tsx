@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, KeyboardAvoidingView, Platform, ScrollView, Pressable, TextInput, TouchableHighlight, Image, Alert, ActivityIndicator,StyleSheet } from 'react-native';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { MainButton } from '@/components/customButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import icons from '@/constants/icons';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from "expo-image-manipulator"; 
 import { API } from '@/constants/api';
 
 import { useAuth } from '@/lib/useAuth';
@@ -16,29 +14,33 @@ import { useProfile } from '@/components/ProfileContext';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { itemTypes, itemColors, itemFormalities, itemMoods, itemPatterns, itemPurposes, itemSeasons, itemStyles, colorDarkness, colorWarmness, itemMaterials } from '@/constants/itemCharacteristics';
 import { TopNavigation } from '@/components/topNavigation';
-import { goBack } from 'expo-router/build/global-state/routing';
 
+type ClothingItem = {
+    id: string;
+    favourite: boolean;
+    category: string;
+    colors: string[];
+    color_darkness: string;
+    color_warmness: string; 
+    formality: string;
+    image: string; 
+    material: string; 
+    mood: string; 
+    pattern: string; 
+    publicUrl: string;
+    purpose: string;
+    season:string
+    style: string;
+    temperature_max: number; 
+    temperature_min: number; 
+    type: string; 
+    urlExpiryDate: string | Date;
+};
 
-const styles = StyleSheet.create({
-    badgeContainer: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      marginTop: 10,
-    },
-    badge: {
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-      borderRadius: 12,
-      marginRight: 5,
-      marginBottom: 5,
-    },
-    badgeText: {
-      fontSize: 16,
-    },
-  });
-const SignUpProfile = () => {
+const CreateItem = () => {
     const credentials = useAuth().auth;
     const {profile, loading:profileLoading } = useProfile();
+    const { itemEdit } = useLocalSearchParams();
     
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -48,6 +50,7 @@ const SignUpProfile = () => {
     const [type, setType]=useState("");
     const [category, setCategory] = useState("");
 
+    const [itemToEdit, setItem] = useState<ClothingItem>();
     const [color, setColor] =useState<string[]>([]);
     const [colorWarm, setColorWarm]=useState("");
     const [colorDark, setColorDark]=useState("");
@@ -66,9 +69,51 @@ const SignUpProfile = () => {
     const [showImgOptions, setImgOptions] = useState(false);
     const [inputDisabled, setInputDisabled] = useState(true);
     
+    useEffect(() => {
+        console.log(itemEdit);
+        
+        if (!itemEdit){
+            return;
+        }
+            console.log('we are here');
+            
+            const itemString = Array.isArray(itemEdit) ? itemEdit[0] : itemEdit;
+            const parsedItem = JSON.parse(itemString);
+            
+            setItem(parsedItem);
+
+            console.log(parsedItem);
+            
+
+            setMood(parsedItem.mood);
+            setType(parsedItem.type);
+            setCategory(parsedItem.category);       
+            setColor(parsedItem.colors);
+            setColorDark(parsedItem.color_darkness);
+            setColorWarm(parsedItem.color_warmness);
+            setPattern(parsedItem.pattern);
+            setMaterial(parsedItem.material);
+            setSeason(parsedItem.season);
+            setTempMin(String(parsedItem.temperature_min));
+            setTempMax(String(parsedItem.temperature_max));
+            setFormality(parsedItem.formality);
+            setPurpose(parsedItem.purpose);
+            setStyle(parsedItem.style);
+            setImgName(parsedItem.image);
+            setImgUrl(parsedItem.public_url);
+            setImgDate(parsedItem.url_expiry_date);
+
+            setImage(parsedItem.public_url);  
+            setInputDisabled(false);
+        
+    },[itemEdit]);
     
     const toggleImgOptions = () =>{
-        setImgOptions(!showImgOptions);
+        console.log(itemToEdit);
+        
+        if (!itemToEdit){
+            setImgOptions(!showImgOptions);
+        }
     };
     const uploadImage= async(mode:string)=>{
         try {
@@ -154,7 +199,6 @@ const SignUpProfile = () => {
             setErrorMessage("Проблеми з опрацюванням цього фото.");   
         }
     }
-
     
     const deleteImage=async()=>{
         try{
@@ -198,48 +242,90 @@ const SignUpProfile = () => {
         }
         else {
             setErrorMessage("");
-            const item={
-                "image":imgName,
-                "type":type,
-                "category":category,
-                "colors":color,
-                "color_warmness":colorWarm,
-                "color_darkness":colorDark,
-                "pattern":pattern,
-                "material" : material,
-                "season":season,
-                "temperature_min":Number(tempMin),
-                "temperature_max":Number(tempMax),
-                "formality":formality,
-                "style":style,
-                "mood":mood,
-                "purpose":purporse,
-                "publicUrl":imgUrl,
-                "urlExpiryDate":imgDate
-            }
-            try {
-                const response = await fetch(API+'/profile/'+profile.id+'/addItem',{
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Basic ${credentials}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(item),
-                });
-                if (!response.ok) {
-                    throw new Error('Помилка add item');
+
+            if (!itemToEdit){
+                const item={
+                    "image":imgName,
+                    "type":type,
+                    "category":category,
+                    "colors":color,
+                    "color_warmness":colorWarm,
+                    "color_darkness":colorDark,
+                    "pattern":pattern,
+                    "material" : material,
+                    "season":season,
+                    "temperature_min":Number(tempMin),
+                    "temperature_max":Number(tempMax),
+                    "formality":formality,
+                    "style":style,
+                    "mood":mood,
+                    "purpose":purporse,
+                    "publicUrl":imgUrl,
+                    "urlExpiryDate":imgDate
                 }
-                
-            } catch (error:any) {
-                console.error(error.message);
-            }finally{
-                setLoading(false);
-                router.push('/wardrobe');
+                try {
+                    const response = await fetch(API+'/profile/'+profile.id+'/add-item',{
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Basic ${credentials}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(item),
+                    });
+                    if (!response.ok) {
+                        throw new Error('Помилка add item');
+                    }
+                    
+                } catch (error:any) {
+                    console.error(error.message);
+                }finally{
+                    setLoading(false);
+                    router.push('/wardrobe');
+                }
+            }else{
+                try {
+                    const item={
+                        "id":itemToEdit.id,
+                        "image":imgName,
+                        "type":type,
+                        "category":category,
+                        "colors":color,
+                        "color_warmness":colorWarm,
+                        "color_darkness":colorDark,
+                        "pattern":pattern,
+                        "material" : material,
+                        "season":season,
+                        "temperature_min":Number(tempMin),
+                        "temperature_max":Number(tempMax),
+                        "formality":formality,
+                        "style":style,
+                        "mood":mood,
+                        "purpose":purporse,
+                        "publicUrl":imgUrl,
+                        "urlExpiryDate":imgDate
+                    }                    
+                    const response = await fetch(API+'/item/edit/'+itemToEdit.id,{
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Basic ${credentials}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(item),
+                    });
+                    if (!response.ok) {
+                        throw new Error('Помилка edit item');
+                    }
+                    
+                } catch (error:any) {
+                    console.error(error.message);
+                }finally{
+                    setLoading(false);
+                    router.push('/wardrobe');
+                }
             }
         }
     };
 
-    
 
     return(
          <SafeAreaView className='px-5 h-full bg-primary ' >
@@ -303,6 +389,7 @@ const SignUpProfile = () => {
                                 labelStyles={{fontSize:18, fontStyle:'normal'}}
                                 badgeStyles={{display:'none'}}
                                 badgeTextStyles={{fontSize: 16}}
+                             ///   disabledItemStyles={{backgroundColor:'white'}}
                             />
                             <View className='bg-white min-h-6 flex-row flex-wrap rounded-b-xl border-black-300 border border-t-0 -mt-3 py-1 px-3 gap-1'>
                                 {color.map((colorKey) => {
@@ -374,7 +461,7 @@ const SignUpProfile = () => {
                                 <TextInput value={tempMax} onChangeText={(val:string)=>setTempMax(val)} placeholder='Макс. температура' className='w-full h-full py-0 flex-1 leading-5  placeholder:text-black placeholder:font-philosopher placeholder:text-xl '/>
                             </View>
                         </View>
-                        <MainButton text='Додати' onPress={()=>submit()} />
+                        <MainButton text={itemToEdit? 'Змінити' :'Додати'} onPress={()=>submit()} />
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -382,4 +469,4 @@ const SignUpProfile = () => {
     )
 }
 
-export default SignUpProfile;
+export default CreateItem;

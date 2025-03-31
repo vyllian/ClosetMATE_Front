@@ -11,6 +11,7 @@ export const useUser = () => {
         const getUser = async () => {
             try {
                 const storedUser = await AsyncStorage.getItem('user');
+
                 if (storedUser) {
                     setUser(JSON.parse(storedUser));
                 }
@@ -18,6 +19,8 @@ export const useUser = () => {
                 if (userData) {
                     setUser(userData);
                 }
+                console.log('user:'+userData);
+            
             } catch (err) {
                 setError('Помилка завантаження користувача');
             } finally {
@@ -25,7 +28,6 @@ export const useUser = () => {
             }
         };
         getUser();
-        console.log(user);
     }, []);
 
     return { user, loading, error };

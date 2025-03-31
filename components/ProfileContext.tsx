@@ -25,19 +25,24 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({children}) =>{
           if(userLoading) return;
           try {
               const profileId = await AsyncStorage.getItem('selectedProfileId');
+              let data;
               if (!profileId) {
-                 if (user.profiles.lenght===1){
-                  const data = await fetchProfileData(user.profiles[0].id);
-                  if (data) setProfile(data);            
+                 if (user.profiles.length===1){
+                   data = await fetchProfileData(user.profiles[0].id);
                 }
                 else{
                   router.push({pathname:'/choose-profile', params: { profiles: user.profiles }});
+                  return;
                 }
               }
               else{
-                const data = await fetchProfileData(profileId);
-                if (data) setProfile(data);
+                data = await fetchProfileData(profileId);
               }
+              if (data && JSON.stringify(data)!== JSON.stringify(profile)){
+                setProfile(data);
+              }
+                
+              
           } catch (error) {
               console.error('Помилка завантаження профілю context:', error);
           } finally {
@@ -46,7 +51,7 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({children}) =>{
       };
 
       loadProfile();
-  }, [user, userLoading, profile]);
+  }, [user, userLoading]);
 
   return (
     <ProfileContext.Provider value={{ profile, loading, setProfile }}>

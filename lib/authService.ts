@@ -11,7 +11,9 @@ export const saveAuth = async (email: string, password: string): Promise<void> =
 
 // Отримуємо креденшіали
 export const getAuth = async (): Promise<string | null> => {
-    return await AsyncStorage.getItem(AUTH_KEY);
+    const auth = await AsyncStorage.getItem(AUTH_KEY);
+
+    return auth;
 };
 
 // Видаляємо креденшіали при виході

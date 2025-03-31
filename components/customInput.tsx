@@ -50,9 +50,8 @@ export const CustomInput = (
             <Text className="font-philosopher text-xl">{label}</Text>
             <View className={`relative flex flex-row items-center justify-start min-h-12 w-full bg-white border ${
                     error ? "border-red-500" : "border-black-300"
-                    } border-solid rounded-lg px-3`}>
+                    } border-solid rounded-xl px-3`}>
                 <TextInput value={value ? value :""} onChangeText={handleChange} placeholder={placeholder} keyboardType={type==='email'? 'email-address': 'default'} autoCapitalize={type==='email'? 'none':(type==='name'? 'words': 'sentences')} className='w-full h-full py-0 flex-1 leading-5  placeholder:text-black-200 placeholder:font-philosopher placeholder:text-xl ' />
-                
             </View>
             {error ? <Text className="absolute -bottom-5 font-philosopher text-red-500 text-base">{error}</Text> : null}
         </View>
@@ -75,7 +74,7 @@ export const CustomPassword = ( {label, placeholder, value, setValue, type
     return (
         <View  className="mb-3">
             <Text className="font-philosopher text-xl">{label}</Text>
-            <View className="relative flex flex-row items-center justify-start min-h-12 w-full bg-white border border-black-300 border-solid rounded-lg px-3 pr-4 ">
+            <View className="relative flex flex-row items-center justify-start min-h-12 w-full bg-white border border-black-300 border-solid rounded-xl px-3 pr-4 ">
                 <TextInput secureTextEntry={!isVisible} value={value} onChangeText={handleChange} placeholder={placeholder} className=' w-full h-full  py-0 flex-1 leading-5  placeholder:text-black-200 placeholder:font-philosopher placeholder:text-xl ' />
                 <TouchableHighlight onPress={() => setIsVisible(!isVisible)}>
                     <Entypo name={isVisible?"eye":"eye-with-line" } size={20} color="#636363" />

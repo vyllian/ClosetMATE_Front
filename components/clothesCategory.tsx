@@ -4,7 +4,7 @@ import { View, Image, Text, TouchableHighlight } from 'react-native';
 
 
 
-export const ClothesCategory = ({type, onPress}:{type:string, onPress:()=>{}})=>{
+export const ClothesCategory = ({type, onPress}:{type:string, onPress:()=>void})=>{
     let imgSrc;
     let text;
     const categorise = (type: string) => {
