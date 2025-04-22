@@ -1,5 +1,6 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "./node_modules/expo/tsconfig.base.json",
+  // D:\diploma\ClosetMATE_Front\node_modules\expo\tsconfig.base.json
   "compilerOptions": {
     "strict": true,
     "paths": {

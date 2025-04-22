@@ -4,9 +4,11 @@ import { SmallItemPreview } from '@/components/itemsPreview';
 import { useProfile } from '@/components/ProfileContext';
 import { TopNavigation } from '@/components/topNavigation';
 import { API } from '@/constants/api';
+import ClothingItem from '@/constants/clothingItem';
 import icons from '@/constants/icons';
 import { colorDarkness, colorWarmness, itemColors, itemFormalities, itemMaterials, itemMoods, itemPatterns, itemPurposes, itemSeasons, itemStyles, itemTypes } from '@/constants/itemCharacteristics';
 import { useAuth } from '@/lib/useAuth';
+import { useClothingItems } from '@/lib/UseClothingItems';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -17,86 +19,32 @@ import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-lis
 
 
 const ItemsSearch = () => {
-    const {profile, loading:profileLoading, setProfile } = useProfile();
     const {category, title} = useLocalSearchParams();
     const {auth, loading:authLoading} = useAuth();
     
-    const [loading, setLoading] = useState(true);
-    const [clothes, setClothes] = useState<ClothingItem[]>([]);
-    const [filteredClothes, setFilteredClothes] = useState<ClothingItem[]>([]);
-    const [detailsShown, setDetailsShown]= useState(false);
+    const {
+        loading,
+        filteredClothes,
+        handleSearch,
+        color,
+        setColor,
+        type,
+        setType,
+        favourite,
+        setFavourite,
+        addItemToFav,
+        deleteItem,
+    } = useClothingItems();
+
     const [item, setItem] = useState<ClothingItem>();
+    const [detailsShown, setDetailsShown]= useState(false);
     const [filtersShown, setFilersShown] = useState(false);
-    const [color, setColor] =useState<string[]>([]);
-    const [type, setType] = useState("");
-    const [favourite, setFavourite] = useState(false);
 
-    type ClothingItem = {
-        id: string;
-        favourite: boolean;
-        category: string;
-        colors: string[];
-        color_darkness: string;
-        color_warmness: string; 
-        formality: string;
-        image: string; 
-        material: string; 
-        mood: string; 
-        pattern: string; 
-        public_url: string;
-        purpose: string;
-        season:string
-        style: string;
-        temperature_max: number; 
-        temperature_min: number; 
-        type: string; 
-        url_expiry_date: string | Date;
-    };
 
-    const fetchClothes = async (category: string) => {
-        console.log(auth);
-        console.log("title"+title);
-        
-        setFilersShown (false);
-        setDetailsShown (false);
-        setFavourite(false);
-
-        try {
-            const response = await fetch(API+'/profile/'+profile.id+'/items-by-category?category='+category,{
-                method: 'GET',
-                headers: {
-                    'Authorization': `Basic ${auth}`,
-                },
-            }); // API-запит
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Помилка завантаження одягу:', error);
-            return [];
-        }
-    };
-
-    useEffect(() => {
-        console.log(auth);
-        console.log(authLoading);
-        
-        console.log(profile);
-        if (authLoading || !auth) return;
-        
-        const loadClothes = async () => {
-            setLoading(true);
-            const items = await fetchClothes(Array.isArray(category) ? category[0] : category);
-            setClothes(items);
-            setFilteredClothes(items);
-            console.log(items);
-            setLoading(false);
-        };
-
-        loadClothes();
-    }, [category, authLoading]);
     useEffect(() => {
         handleSearch(true, false, false);
     }, [favourite]);
+
     useEffect(()=>{
         if(!item){
             return;
@@ -104,19 +52,7 @@ const ItemsSearch = () => {
         toggleDetails();
     },[item]);
 
-    const handleSearch = async(favChange:boolean, categChange:boolean, colChange:boolean ) => {       
-        const filtered = clothes.filter(item  =>
-            (!favChange || item.favourite === favourite) &&
-            (!categChange || item.type === type) &&
-            (!colChange || item.colors.some(c => color.includes(c)))
-        );
-        setFilteredClothes(filtered);
-        setColor([]);
-        setType("");
-        if (!favChange){
-            toggleFilters();
-        }
-    };
+    
 
     const toggleDetails = async()=>{
         setDetailsShown(!detailsShown);
@@ -128,50 +64,6 @@ const ItemsSearch = () => {
         setFavourite(!favourite);
     }
 
-    const addItemtoFav = async()=>{
-        setLoading(true);
-        try {
-            const response = await fetch(API+'/profile/'+profile.id+'/set-item-fav?item-id='+item?.id,{
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Basic ${auth}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error('Помилка add to fav item');
-            }                
-        } catch (error:any) {
-            console.error(error.message);
-        }finally{
-            toggleDetails();
-            const items = await fetchClothes(Array.isArray(category) ? category[0] : category);
-            setClothes(items);
-            setFilteredClothes(items);
-            setLoading(false);
-        }
-        
-    }
-
-    const deleteItem = async()=>{
-        try {
-            const response = await fetch(API+'/item/delete/'+item?.id,{
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Basic ${auth}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error('Помилка delete item');
-            }                
-        } catch (error:any) {
-            console.error(error.message);
-        }finally{
-            const tem = clothes.filter(cloth => cloth.id !== item?.id);
-            setClothes(tem);
-            setFilteredClothes(tem);
-            toggleDetails();
-        }
-    }
      
       
     return(
@@ -203,7 +95,6 @@ const ItemsSearch = () => {
                                 inputStyles={{fontSize:18}}
                                 labelStyles={{fontSize:18, fontStyle:'normal'}}
                                 badgeStyles={{display:'none'}}
-                              //  disabledItemStyles={}
                             />
                             <View className='bg-white min-h-6 flex-row flex-wrap rounded-b-xl border-black-300 border border-t-0 -mt-3 py-1 px-3 gap-1 mb-8'>
                                 {color.map((colorKey) => {
@@ -248,17 +139,17 @@ const ItemsSearch = () => {
                 
             </ScrollView>    
             </KeyboardAvoidingView>
-                    {detailsShown && (
+                    {(detailsShown && item) && (
                         <View className='absolute  items-center justify-center  inset-0 bg-black/30 backdrop-blur-xl'>
                             <View className='bg-primary w-11/12 pt-8 pb-4 items-center justify-center  z-50 rounded-lg  shadow-xl shadow-black-200[06]'>
-                                <TopNavigation arrowAction={()=>toggleDetails()} binAction={()=>deleteItem()}></TopNavigation>
+                                <TopNavigation arrowAction={()=>toggleDetails()} binAction={()=>deleteItem(item.id)}></TopNavigation>
                                 <View className='bg-white w-full items-center p-2 pt-4 mt-5'>
                                     <Image  source={{uri:item?.public_url}} className='size-48' resizeMode='contain'/>
                                     <View className='flex-row justify-between w-full px-1'>
                                         <TouchableHighlight onPress={()=>router.push({pathname:'/(root)/create-item', params:{itemEdit: JSON.stringify(item)}})} underlayColor='transperent'>
                                             <Feather name="edit-3" size={30} color="black" />
                                         </TouchableHighlight>
-                                        <TouchableHighlight onPress={()=>addItemtoFav()} underlayColor='transperent'>
+                                        <TouchableHighlight onPress={()=>addItemToFav(item.id)} underlayColor='transperent'>
                                         {item?.favourite ? (
                                             <MaterialIcons name="favorite" size={32} color="#fb3f4a" />
                                         ):(
