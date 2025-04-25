@@ -61,7 +61,9 @@ const SignUpEmail = () => {
                     <CustomInput label="Прізвище ім'я:" placeholder='Шевченко Тарас' value={fullName} setValue={setName} type='name' />
                     <CustomInput label='Електронна пошта:' placeholder='user@gmail.com' value={email} setValue={setEmail} type='email' />
                     <CustomPassword label='Пароль:' placeholder='Pass1234' value={password} setValue={setPassword} type='password'/>
-                    <MainButton text='Підтвердити' onPress={sendConfirmation} />
+                    <View className='flex-row'>
+                        <MainButton text='Підтвердити' onPress={sendConfirmation} />
+                    </View>
                     <Text className=' font-philosopher text-center text-black-200'>Натискаючи «Підтвердити», ви погоджуєтеся з нашими 
                         <Link href={'/terms-of-use'} className=' font-philosopher-bold text-black'> Умовами надання послуг</Link> та <Link href={'/privacy-policy'} className='text-black font-philosopher-bold'>Політикою конфіденційності</Link>
                     </Text>

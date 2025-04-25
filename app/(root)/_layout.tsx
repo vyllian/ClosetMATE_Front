@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { Redirect, Slot } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

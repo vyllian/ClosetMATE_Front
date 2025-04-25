@@ -86,7 +86,9 @@ const SignIn = () =>{
                     <CustomInput label='Електронна пошта:' placeholder='user@gmail.com' value={email} setValue={setEmail} type='email' />
                     <CustomPassword label='Пароль:' placeholder='Pass1234' value={password} setValue={setPassword} />
                     {errorMessage && <Text className="-mt-5 font-philosopher text-red-500 text-xl">{errorMessage}</Text>}
-                    <MainButton text='Увійти' onPress={()=>handleLogin()} />
+                    <View className='flex-row'>
+                        <MainButton text='Увійти' onPress={()=>handleLogin()} />
+                    </View>
                     {/* <TouchableHighlight onPress={()=>resetPassword()}>
                         <Text>Забули пароль?</Text>
                     </TouchableHighlight> */}

@@ -165,9 +165,15 @@ const EditUser = () => {
                 <TopNavigation arrowAction={()=>router.push('/(root)/(tabs)/profile')} binAction={()=>deleteUser()} />
                 <View className='flex items-center gap-5'>
                     <Text className=' text-center font-philosopher-bold text-2xl'>Дані про користувача</Text>
-                    <MainButton text="Оновити ім'я" onPress={()=>toggleName()} />
-                    <MainButton text='Оновити пошту' onPress={()=>toggleEmail()} />
-                    <MainButton text='Оновити пароль' onPress={()=>togglePassword()} />
+                    <View className='flex-row'>
+                        <MainButton text="Оновити ім'я" onPress={()=>toggleName()} />
+                    </View>
+                    <View className='flex-row'>
+                        <MainButton text='Оновити пошту' onPress={()=>toggleEmail()} />
+                    </View>
+                    <View className='flex-row'>
+                        <MainButton text='Оновити пароль' onPress={()=>togglePassword()} />
+                    </View>
                 </View>  
             </ScrollView>
             )}
@@ -179,7 +185,9 @@ const EditUser = () => {
                     <View className='flex  w-full h-fit gap-5 '>
                         <CustomInput label="Ім'я:" placeholder="Ім'я" value={firstName} setValue={setFirstname} />
                         <CustomInput label="Прізвище:" placeholder="Прізвище" value={lastName} setValue={setLastname} />
-                        <MainButton text='Оновити' onPress={()=>updateNames()}/>
+                        <View className='flex-row'>
+                            <MainButton text='Оновити' onPress={()=>updateNames()}/>
+                        </View>
                     </View>
                 </View>
             )}
@@ -190,7 +198,9 @@ const EditUser = () => {
                     </TouchableHighlight>
                     <View className='flex  w-full h-fit gap-5 '>
                         <CustomInput label="Електронна пошта:" placeholder="email@gmail.com" value={email} setValue={setEmail} />
-                        <MainButton text='Оновити' onPress={()=>updateEmail()}/>
+                        <View className='flex-row'>
+                            <MainButton text='Оновити' onPress={()=>updateEmail()}/>
+                        </View>
                     </View>
                 </View>
             )}
@@ -202,7 +212,9 @@ const EditUser = () => {
                     <View className='flex  w-full h-fit gap-3 '>
                         <CustomPassword label="Старий пароль:" placeholder="oldPassword1" value={oldPassword} setValue={setOldPassword} />
                         <CustomPassword label="Новий пароль:" placeholder="newPassword2" value={newPassword} setValue={setNewPassword} />
-                        <MainButton text='Оновити' onPress={()=>updatePassword()}/>
+                        <View className='flex-row'>
+                            <MainButton text='Оновити' onPress={()=>updatePassword()}/>
+                        </View>
                     </View>
                 </View>
             )}

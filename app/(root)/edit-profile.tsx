@@ -273,7 +273,7 @@ const EditProfile = () => {
                                 <DateTimePicker mode='date' display='spinner' value={date} onChange={onChange} minimumDate={new Date(1925,0,1)} maximumDate={new Date()} textColor='black'  />
                             )}
                             {showPicker && Platform.OS==='ios'&&(
-                                <View>
+                                <View className='flex-row'>
                                     <MainButton text='Вибрати' onPress={confirmIOSDate} />
                                 </View>
                             )}
@@ -290,9 +290,11 @@ const EditProfile = () => {
                             <SelectList data={genderOptions} setSelected={(val:string) => setGender(val)} defaultOption={{ key: profile.gender, value: genderOptions.find(option => option.key === profile.gender)?.value || "Невідомо" }}  placeholder='Стать' fontFamily='philosopher' search={false} boxStyles={{backgroundColor:"white", borderColor:"#D9D9D9", paddingHorizontal:12, width:"100%" }} dropdownStyles={{backgroundColor:"white"}} inputStyles={{fontSize:18}} />
                         </View>
                         {!allComplete &&( <Text className="absolute top-full font-philosopher text-red-500 text-xl">Заповніть обов'язкові (*) поля!</Text> )}
-                        <MainButton text='Внести зміни' onPress={()=>submit()} />
+                        <View className='flex-row'>
+                            <MainButton text='Внести зміни' onPress={()=>submit()} />
+                        </View>
                     </View>
-                    {/* <View className='absolute bottom-0 w-full'>
+                    {/* <View className='absolute bottom-0 w-full flex-row'>
                         <MainButton text='Видалити профіль' onPress={()=>deleteProfile()} color='#bc4444' />
                     </View> */}
                 </ScrollView>

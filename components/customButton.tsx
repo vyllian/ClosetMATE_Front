@@ -12,16 +12,16 @@ export const MainButton = (
     }) => {
         const bgColor = color ? color : "black";
         return(
-            <TouchableHighlight onPress={onPress} className="w-full min-h-12 flex items-center justify-center bg-black rounded-lg" style={{backgroundColor:bgColor}}>
+            <TouchableHighlight onPress={onPress} className="flex-1 min-h-12 flex items-center justify-center bg-black rounded-lg" style={{backgroundColor:bgColor}}>
                 <Text className="text-white font-philosopher text-xl ">{text}</Text>
             </TouchableHighlight>
         );
     }
 
 export const PlusButton = ({size, onPress}:{size:number, onPress:()=>void})=>{
-    let btnSize = size>40 ? 'size-16' : 'size-10';
+    let btnSize = size<40 ? (size < 20 ? 'size-6' : 'size-10') : 'size-16';
     return(
-        <TouchableHighlight onPress={onPress} underlayColor="#bc4444" className={`bg-accent-100 ${btnSize} items-center justify-center rounded-full self-end`}>
+        <TouchableHighlight onPress={onPress} underlayColor="#bc4444" className={`bg-accent-100 ${btnSize} items-center justify-center rounded-full `}>
             <MaterialCommunityIcons name="plus" size={size} color="white" />
         </TouchableHighlight>
     )

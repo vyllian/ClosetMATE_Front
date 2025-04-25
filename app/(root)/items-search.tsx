@@ -109,7 +109,9 @@ const ItemsSearch = () => {
                                     );
                                 })}
                             </View>
-                            <MainButton text={(type==="" && color.length===0) ? 'Скинути фільтри' :'Застосувати'} onPress={()=>{type ? (color.length>0? handleSearch(false, true, true) : handleSearch(false, true, false)) : (color.length>0? handleSearch(false, false, true) : handleSearch(false, false, false))} } />
+                            <View className='flex-row'>
+                                <MainButton text={(type==="" && color.length===0) ? 'Скинути фільтри' :'Застосувати'} onPress={()=>{type ? (color.length>0? handleSearch(false, true, true) : handleSearch(false, true, false)) : (color.length>0? handleSearch(false, false, true) : handleSearch(false, false, false))} } />
+                            </View>
                         </View>
                     )}            
                     <View className='flex-row w-full justify-between items-center '>
@@ -222,7 +224,7 @@ const ItemsSearch = () => {
                                         {item?.temperature_max}
                                     </Text>
                                 </View>
-                                <View className='px-4 w-full mt-4'>
+                                <View className='px-4 w-full mt-4 flex-row'>
                                     <MainButton text='Використати' onPress={()=>router.push('/')} />
                                 </View>
                             </View>

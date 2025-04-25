@@ -388,7 +388,7 @@ const CreateItem = () => {
                                 inputStyles={{fontSize:18}}
                                 labelStyles={{fontSize:18, fontStyle:'normal'}}
                                 badgeStyles={{display:'none'}}
-                                badgeTextStyles={{fontSize: 16}}
+                                // badgeTextStyles={{fontSize: 16}}
                              ///   disabledItemStyles={{backgroundColor:'white'}}
                             />
                             <View className='bg-white min-h-6 flex-row flex-wrap rounded-b-xl border-black-300 border border-t-0 -mt-3 py-1 px-3 gap-1'>
@@ -461,7 +461,9 @@ const CreateItem = () => {
                                 <TextInput value={tempMax} onChangeText={(val:string)=>setTempMax(val)} placeholder='Макс. температура' className='w-full h-full py-0 flex-1 leading-5  placeholder:text-black placeholder:font-philosopher placeholder:text-xl '/>
                             </View>
                         </View>
-                        <MainButton text={itemToEdit? 'Змінити' :'Додати'} onPress={()=>submit()} />
+                        <View className='flex-row'>
+                            <MainButton text={itemToEdit? 'Змінити' :'Додати'} onPress={()=>submit()} />
+                        </View>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>

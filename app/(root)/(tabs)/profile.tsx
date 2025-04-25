@@ -106,14 +106,9 @@ const Profile = () => {
 
     return (
         <SafeAreaView className=' h-full bg-primary '>
-            {loading || imageLoading || authLoading ? (
+            {loading || authLoading ? (
                 
                 <View className="absolute top-0 left-0 right-0 bottom-0 bg-primary flex items-center justify-center z-50">
-                    {/* <Text>
-        //  {loading ? "loading=true" : "loading=false"}{" "}
-        // {imageLoading ? "imageLoading=true" : "imageLoading=false"}{" "}
-        // {authLoading ? "authLoading=true" : "authLoading=false"} 
-    </Text> */}
                     <ActivityIndicator size="large" color="#828282" />
                 </View>
             ):(
