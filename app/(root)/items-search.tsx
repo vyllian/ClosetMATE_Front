@@ -21,9 +21,11 @@ import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-lis
 const ItemsSearch = () => {
     const {category, title} = useLocalSearchParams();
     const {auth, loading:authLoading} = useAuth();
+    const {profile} = useProfile();
     
     const {
         loading,
+        clothes,
         filteredClothes,
         handleSearch,
         color,
@@ -32,8 +34,8 @@ const ItemsSearch = () => {
         setType,
         favourite,
         setFavourite,
-        addItemToFav,
-        deleteItem,
+        filtersAreActive,
+        fetchAndUpdateClothes,
     } = useClothingItems();
 
     const [item, setItem] = useState<ClothingItem>();
@@ -52,7 +54,37 @@ const ItemsSearch = () => {
         toggleDetails();
     },[item]);
 
-    
+    const addItemToFav = async (item: ClothingItem) => {
+        console.log('favourite');
+        try {
+          const response = await fetch(`${API}/profile/${profile.id}/set-item-fav?item-id=${item.id}`, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Basic ${auth}`,
+            },
+          });
+          if (!response.ok) throw new Error('Помилка add to fav item');
+        } catch (error: any) {
+          console.error(error.message);
+        }
+        item.favourite = !item.favourite
+        fetchAndUpdateClothes();
+      };
+      
+      const deleteItem = async (itemId: string, onFinish?: () => void) => {
+        try {
+          const response = await fetch(`${API}/item/delete/${itemId}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Basic ${auth}`,
+            },
+          });
+          if (!response.ok) throw new Error('Помилка delete item');
+        } catch (error: any) {
+          console.error(error.message);
+        } 
+        fetchAndUpdateClothes();
+      };
 
     const toggleDetails = async()=>{
         setDetailsShown(!detailsShown);
@@ -64,6 +96,13 @@ const ItemsSearch = () => {
         setFavourite(!favourite);
     }
 
+    const resetFilters = () => {
+        setType('');
+        setColor([]);
+        setFavourite(false);
+        handleSearch();
+        toggleFilters();
+    };
      
       
     return(
@@ -109,8 +148,9 @@ const ItemsSearch = () => {
                                     );
                                 })}
                             </View>
-                            <View className='flex-row'>
-                                <MainButton text={(type==="" && color.length===0) ? 'Скинути фільтри' :'Застосувати'} onPress={()=>{type ? (color.length>0? handleSearch(false, true, true) : handleSearch(false, true, false)) : (color.length>0? handleSearch(false, false, true) : handleSearch(false, false, false))} } />
+                            <View className='flex-row gap-2'>
+                                <MainButton text='Скинути фільтри' onPress={()=>resetFilters()} color='#828282'  />
+                                <MainButton disabled={!filtersAreActive} text='Застосувати' onPress={()=>{type ? (color.length>0? handleSearch(false, true, true) : handleSearch(false, true, false)) : (color.length>0? handleSearch(false, false, true) : handleSearch(false, false, false)); toggleFilters()}} />
                             </View>
                         </View>
                     )}            
@@ -151,8 +191,8 @@ const ItemsSearch = () => {
                                         <TouchableHighlight onPress={()=>router.push({pathname:'/(root)/create-item', params:{itemEdit: JSON.stringify(item)}})} underlayColor='transperent'>
                                             <Feather name="edit-3" size={30} color="black" />
                                         </TouchableHighlight>
-                                        <TouchableHighlight onPress={()=>addItemToFav(item.id)} underlayColor='transperent'>
-                                        {item?.favourite ? (
+                                        <TouchableHighlight onPress={()=>addItemToFav(item)} underlayColor='transperent'>
+                                        {item.favourite ? (
                                             <MaterialIcons name="favorite" size={32} color="#fb3f4a" />
                                         ):(
                                             <MaterialIcons name="favorite-border" size={32} color="#fb3f4a" />

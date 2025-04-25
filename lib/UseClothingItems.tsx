@@ -16,6 +16,7 @@ export const useClothingItems = () => {
   const [color, setColor] = useState<string[]>([]);
   const [type, setType] = useState('');
   const [favourite, setFavourite] = useState(false);
+  const filtersAreActive = type !== '' || color.length > 0 || favourite;
 
   const fetchClothes = async (category: string) => {
     try {
@@ -59,48 +60,13 @@ export const useClothingItems = () => {
     );
     setFilteredClothes(filtered);
   };
+
   const fetchAndUpdateClothes = async () => {
     const items = await fetchClothes(Array.isArray(category) ? category[0] : category);
     setClothes(items);
     setFilteredClothes(items);
   };
   
-  const addItemToFav = async (itemId: string, onFinish?: () => void) => {
-    try {
-      const response = await fetch(`${API}/profile/${profile.id}/set-item-fav?item-id=${itemId}`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Basic ${auth}`,
-        },
-      });
-      if (!response.ok) throw new Error('Помилка add to fav item');
-    } catch (error: any) {
-      console.error(error.message);
-    } finally {
-      await fetchAndUpdateClothes();
-      onFinish?.();
-    }
-  };
-  
-  const deleteItem = async (itemId: string, onFinish?: () => void) => {
-    try {
-      const response = await fetch(`${API}/item/delete/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Basic ${auth}`,
-        },
-      });
-      if (!response.ok) throw new Error('Помилка delete item');
-    } catch (error: any) {
-      console.error(error.message);
-    } finally {
-      const updated = clothes.filter(cloth => cloth.id != itemId);
-      setClothes(updated);
-      setFilteredClothes(updated);
-      onFinish?.();
-    }
-  };
-
   return {
     loading,
     clothes,
@@ -113,7 +79,7 @@ export const useClothingItems = () => {
     setType,
     favourite,
     setFavourite,
-    addItemToFav,
-    deleteItem,
+    fetchAndUpdateClothes,
+    filtersAreActive
   };
 };
