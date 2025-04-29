@@ -6,13 +6,13 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 
 export const MainButton = (
-    {text, onPress, color
+    {text, onPress, color, disabled
     }:
-    {text:string, onPress:() => void , color?:string
+    {text:string, onPress:() => void , color?:string, disabled?:boolean
     }) => {
         const bgColor = color ? color : "black";
         return(
-            <TouchableHighlight onPress={onPress} className="flex-1 min-h-12 flex items-center justify-center bg-black rounded-lg" style={{backgroundColor:bgColor}}>
+            <TouchableHighlight disabled={disabled} onPress={onPress} className="flex-1 min-h-12 flex items-center justify-center bg-black rounded-lg" style={{backgroundColor:bgColor}}>
                 <Text className="text-white font-philosopher text-xl ">{text}</Text>
             </TouchableHighlight>
         );

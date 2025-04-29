@@ -76,7 +76,9 @@ export default function Index() {
                 </View>
               )}
             </View>
-            <PlusButton onPress={()=>tem()} size={44}/>
+            <View className="self-end">
+              <PlusButton onPress={()=>router.push({pathname:'/create-outfit', params: { date: selectedDate}})} size={44}/>
+            </View>
         </ScrollView>
     </SafeAreaView>
   );

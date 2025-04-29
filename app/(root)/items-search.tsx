@@ -171,7 +171,7 @@ const ItemsSearch = () => {
                         {filteredClothes.length > 0 ? 
                         (
                             filteredClothes.map(item => (
-                                <SmallItemPreview key ={item.id} image={item.public_url} favourite={item.favourite} onPress={()=>setItem(item)}  />
+                                <SmallItemPreview key ={item.id} image={item.public_url} favourite={item.favourite} onPress={()=>setItem(item)}   />
                             ))
                         ):(
                             <Text className='font-philosopher text-xl text-black-200 absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2'>Одяг не знайдено</Text>

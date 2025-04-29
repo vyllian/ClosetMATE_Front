@@ -39,12 +39,16 @@ export const useClothingItems = () => {
 
     const loadClothes = async () => {
       setLoading(true);
-      const items = await fetchClothes(Array.isArray(category) ? category[0] : category);
-      setClothes(items);
-      setFilteredClothes(items);
+      const items = await fetchClothes(category ? (Array.isArray(category) ? category[0] : category) : 'all');
+      const sortedItems = items.sort((a:ClothingItem, b:ClothingItem) => {
+        if (a.category < b.category) return -1;
+        if (a.category > b.category) return 1;
+        return 0;
+      });
+      setClothes(sortedItems);
+      setFilteredClothes(sortedItems);
       setLoading(false);
-    };
-
+    };    
     loadClothes();
   }, [category, authLoading]);
 
@@ -63,8 +67,13 @@ export const useClothingItems = () => {
 
   const fetchAndUpdateClothes = async () => {
     const items = await fetchClothes(Array.isArray(category) ? category[0] : category);
-    setClothes(items);
-    setFilteredClothes(items);
+    const sortedItems = items.sort((a:ClothingItem, b:ClothingItem) => {
+      if (a.category < b.category) return -1;
+      if (a.category > b.category) return 1;
+      return 0;
+    });
+    setClothes(sortedItems);
+    setFilteredClothes(sortedItems);
   };
   
   return {
@@ -80,6 +89,7 @@ export const useClothingItems = () => {
     favourite,
     setFavourite,
     fetchAndUpdateClothes,
-    filtersAreActive
+    filtersAreActive,
+    fetchClothes
   };
 };
