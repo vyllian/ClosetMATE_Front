@@ -15,8 +15,9 @@ export const useClothingItems = () => {
   const [filteredClothes, setFilteredClothes] = useState<ClothingItem[]>([]);
   const [color, setColor] = useState<string[]>([]);
   const [type, setType] = useState('');
+  const [cat, setCat] = useState('all')
   const [favourite, setFavourite] = useState(false);
-  const filtersAreActive = type !== '' || color.length > 0 || favourite;
+  const filtersAreActive = type !== '' || color.length > 0 || favourite ;
 
   const fetchClothes = async (category: string) => {
     try {
@@ -52,18 +53,20 @@ export const useClothingItems = () => {
     loadClothes();
   }, [category, authLoading]);
 
-  const handleSearch = (
-    favChange: boolean = false,
-    categChange: boolean = false,
-    colChange: boolean = false
-  ) => {
+  useEffect(()=>{
+    if (cat==='all')
+      setType('')
+  },[cat])
+
+  const handleSearch =()=>{
     const filtered = clothes.filter(item =>
-      (!favChange || item.favourite === favourite) &&
-      (!categChange || item.type === type) &&
-      (!colChange || item.colors.some(c => color.includes(c)))
+      (!favourite || item.favourite) &&
+      (cat === 'all' || item.category === cat) &&
+      (!type || item.type === type) &&
+      (color.length === 0 || item.colors.some(c => color.includes(c)))
     );
     setFilteredClothes(filtered);
-  };
+  } 
 
   const fetchAndUpdateClothes = async () => {
     const items = await fetchClothes(Array.isArray(category) ? category[0] : category);
@@ -86,6 +89,8 @@ export const useClothingItems = () => {
     setColor,
     type,
     setType,
+    cat,
+    setCat,
     favourite,
     setFavourite,
     fetchAndUpdateClothes,

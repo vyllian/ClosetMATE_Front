@@ -13,7 +13,7 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, SafeAreaView, ScrollView, Image, TouchableHighlight, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, ActivityIndicator, SafeAreaView, ScrollView, Image, TouchableHighlight, KeyboardAvoidingView, Platform, Pressable } from 'react-native';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 
 
@@ -44,7 +44,7 @@ const ItemsSearch = () => {
 
 
     useEffect(() => {
-        handleSearch(true, false, false);
+        handleSearch();
     }, [favourite]);
 
     useEffect(()=>{
@@ -140,17 +140,19 @@ const ItemsSearch = () => {
                                 const colorItem = itemColors.find((item) => item.key === colorKey);
                                     if (!colorItem) return null;
                                     return (
+                                        <Pressable key={colorKey} onPress={()=>setColor(prev => prev.filter(col => col !== colorKey))}>
                                         <View key={colorKey} className='px-2 py-1 rounded-xl border' style={{ backgroundColor: colorItem.color, borderColor: colorKey==="white"? "#d9d9d9":"transparent" }}>
                                             <Text  className="text-lg font-philosopher" style={{ color: (colorKey === "black" ||colorKey === "blue" ||colorKey ==="brown" || colorKey ==="green" || colorKey ==="gray" ||colorKey ==="red"|| colorKey ==="purple" || colorKey ==="pink") ? "white" : "black" }}>
                                                 {colorItem.value}
                                             </Text>
                                         </View>
+                                        </Pressable>
                                     );
                                 })}
                             </View>
                             <View className='flex-row gap-2'>
                                 <MainButton text='Скинути фільтри' onPress={()=>resetFilters()} color='#828282'  />
-                                <MainButton disabled={!filtersAreActive} text='Застосувати' onPress={()=>{type ? (color.length>0? handleSearch(false, true, true) : handleSearch(false, true, false)) : (color.length>0? handleSearch(false, false, true) : handleSearch(false, false, false)); toggleFilters()}} />
+                                <MainButton disabled={!filtersAreActive} text='Застосувати' onPress={()=>{handleSearch(); toggleFilters()}} />
                             </View>
                         </View>
                     )}            

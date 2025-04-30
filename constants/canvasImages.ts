@@ -56,8 +56,8 @@ export const canvaImg = [
     {
         position: 9,
         image: require('../assets/icons/boot.png'),
-        width: 65,
-        height: 65,
+        width: 80,
+        height: 80,
     },
     {
         position: 10,

@@ -1,9 +1,17 @@
 
-
+export const itemCategories = [
+    {'key':'all', 'value':'Весь одяг'},
+    {'key':'outer', 'value':'Верхній одяг'},
+    {'key':'overall', 'value':'Суцільне'},
+    {'key':'top', 'value':'Верх'},
+    {'key':'bottom', 'value':'Низ'},
+    {'key':'shoes', 'value':'Взуття'},
+    {'key':'accessory', 'value':'Аксесуари'},
+]
 
 export const itemTypes = [
     
-    {'key':'outers', 'value':'Верхній одяг', 'disabled':'true'},
+    {'key':'outer', 'value':'Верхній одяг', 'disabled':'true'},
     {'key':'anorak', 'value':'Анорак', 'category':'outer'},
     {'key':'bomber', 'value':'Бомбер', 'category':'outer'},
     {'key':'jacket', 'value':'Куртка', 'category':'outer'},
@@ -60,7 +68,7 @@ export const itemTypes = [
     {'key':'backpack', 'value':'Рюкзак', 'category':'accessory'},
     {'key':'bag', 'value':'Сумка', 'category':'accessory'},
 
-    {'key':'tie', 'value':'Краватка', 'category':'accessory', 'disabled':'true'},
+    {'key':'tie', 'value':'Краватка', 'category':'accessory'},
     {'key':'tights', 'value':'Колготи', 'category':'accessory'},
     {'key':'bodychain', 'value':'Ланцюжок', 'category':'accessory'},
     {'key':'glasses', 'value':'Окуляри', 'category':'accessory'},

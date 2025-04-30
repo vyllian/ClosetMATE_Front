@@ -10,13 +10,17 @@
     "newArchEnabled": true,
     "backgroundColor": "#FFDCEF",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryAddUsageDescription": "Потрібно для збереження фото у галереї"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFDCEF"
-      }
+      },
+      "permissions": ["READ_MEDIA_IMAGES", "WRITE_EXTERNAL_STORAGE"]
     },
     "web": {
       "bundler": "metro",
@@ -51,7 +55,8 @@
           "photosPermission":"Select and upload images.",
           "cameraPermission":"Allow $(PRODUCT_NAME) to access your camera."
         }
-      ]
+      ],
+      ["expo-media-library"]
     ],
     "experiments": {
       "typedRoutes": true
