@@ -22,6 +22,10 @@ export const Item = (
     setScale,
     rotation,
     setRotation,
+    flipVertical,
+    setFlipVertical,
+    flipHorizontal,
+    setFlipHorizontal,
     deleteItem, 
     openSearch
   }:{
@@ -33,6 +37,10 @@ export const Item = (
     setScale: (val: number) => void;
     rotation: number;
     setRotation: (val: number) => void; 
+    flipVertical: boolean;
+    setFlipVertical: (val: boolean) => void;
+    flipHorizontal: boolean;
+    setFlipHorizontal: (val: boolean) => void;
     deleteItem:() => void, 
     openSearch:() => void }
  )=>{
@@ -112,11 +120,21 @@ export const Item = (
       
     const composedGesture = Gesture.Simultaneous(pinchGesture, rotationGesture);
 
-    const animatedStyle = useAnimatedStyle(() => {
+    const containerAnimatedStyle =  useAnimatedStyle(() => {
       return {
         transform: [
           { scale: scaleShared.value },
           { rotateZ: `${rotationShared.value}rad` },
+
+        ],
+      };
+    });
+    const animatedStyle = useAnimatedStyle(() => {
+      return {
+        transform: [
+         
+          { scaleY: flipVertical ? -1 : 1 },
+          { scaleX: flipHorizontal ? -1 : 1 },
         ],
       };
     });
@@ -124,9 +142,10 @@ export const Item = (
    
   return(
         <GestureDetector gesture={composedGesture}>
-          <Animated.View style={animatedStyle}>
+          <Animated.View style={containerAnimatedStyle}>
 
               <View className={`relative border p-1 ${edit ? 'border-black-200' : 'border-transparent'}`} >
+                <Animated.View style={animatedStyle}>
   
                 <TouchableHighlight onPress={()=>{setActivePosition(); if (!item) openSearch();}} onLongPress={item ? ()=>toggleEdit() : ()=>{}} underlayColor='trasperent'>
                     {item ? (
@@ -138,13 +157,20 @@ export const Item = (
                     </ImageBackground>
                     )}
                 </TouchableHighlight>
+                </Animated.View>
                 { (item && edit) && (
                   <>
                   <TouchableHighlight onPress={openSearch} underlayColor='trasperent' className='rounded-full bg-black size-8 justify-center items-center absolute left-0 top-0 -translate-x-3/4 -translate-y-2/3'>
                         <Ionicons name="shuffle" size={20} color="white" />
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={()=>{setEdit(false); deleteItem()}} underlayColor='trasperent' className='rounded-full bg-danger size-8 justify-center items-center absolute right-0 bottom-0 translate-x-3/4 translate-y-2/3'>
+                    <TouchableHighlight onPress={()=>{setEdit(false); deleteItem()}} underlayColor='trasperent' className='rounded-full bg-danger size-8 justify-center items-center absolute right-0 top-0 translate-x-3/4 -translate-y-2/3'>
                         <FontAwesome name="trash-o" size={20} color="white" />
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => setFlipVertical(!flipVertical)} underlayColor='trasperent' className='rounded-full bg-black size-8 justify-center items-center absolute right-0 bottom-0 translate-x-3/4 translate-y-2/3'>
+                      <Ionicons name="swap-vertical-outline" size={20} color="white" />                    
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => setFlipHorizontal(!flipHorizontal)} underlayColor='trasperent' className='rounded-full bg-black size-8 justify-center items-center absolute left-0 bottom-0 -translate-x-3/4 translate-y-2/3'>
+                        <Ionicons name="swap-horizontal" size={20} color="white" />                    
                     </TouchableHighlight>
                     </>
                 )}

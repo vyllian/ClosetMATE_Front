@@ -73,7 +73,16 @@ const CreateOutfit = () => {
     },
     {} as { [key: number]: { scale: number; rotation: number } }
   );
+  const initialFlipMap = Array.from({ length: 11 }, (_, i) => i).reduce(
+    (acc, pos) => {
+      acc[pos] = { vertical: false, horizontal: false };
+      return acc;
+    },
+    {} as { [key: number]: { vertical: boolean; horizontal: boolean } }
+  );
+
   const [transformMap, setTransformMap] = useState(initialTransformMap);
+  const [flipMap, setFlipMap] = useState(initialFlipMap);
 
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
@@ -180,7 +189,9 @@ const CreateOutfit = () => {
   const handleSetItem = (item: ClothingItem) => {
     if (activePosition !== null) {
       setSelectedItems((prev) => ({ ...prev, [activePosition]: item }));
+      handlePress(activePosition)
       setTransformMap((prev)=>({...prev, [activePosition]: {scale:1, rotation:0}}))
+      setFlipMap((prev)=>({...prev, [activePosition]: {vertical:false, horizontal:false}}))
       setShowSearch(false);
     }
   };
@@ -216,6 +227,14 @@ const CreateOutfit = () => {
     }));
   };
 
+  const setVerFlipAt = (position: number, flip: boolean) => {
+    setFlipMap(prev => ({ ...prev, [position]: {...prev[position], vertical:flip} }));
+  };
+  
+  const setHorFlipAt = (position: number, flip: boolean) => {
+    setFlipMap(prev => ({ ...prev, [position]: {...prev[position], horizontal:flip} }));
+  };
+
   const handleDeleteItem = (position: number) => {
     setSelectedItems((prev) => ({ ...prev, [position]: null }));
     setTransformMap((prev)=>({...prev, [position]: {scale:1, rotation:0}}))
@@ -234,13 +253,11 @@ const CreateOutfit = () => {
           Alert.alert("Помилка", "Знімок неможливий: елемент не готовий.");
           return;
         }
-        // Захоплення зображення
         const uri = await (viewShotRef.current as any).capture();
         if (!uri) {
           Alert.alert("Помилка", "Не вдалося створити зображення.");
           return;
         }
-        // Запит дозволу
         const { status } = await MediaLibrary.requestPermissionsAsync();
         if (status !== "granted") {
           Alert.alert(
@@ -249,8 +266,6 @@ const CreateOutfit = () => {
           );
           return;
         }
-
-        // Збереження в медіатеку
         const asset = await MediaLibrary.createAssetAsync(uri);
         await MediaLibrary.createAlbumAsync("ClosetMate", asset, false);
 
@@ -321,6 +336,10 @@ const CreateOutfit = () => {
                         setScale={(val) => setScaleAt(0, val)}
                         rotation={transformMap[0].rotation}
                         setRotation={(val) => setRotationAt(0, val)}
+                        flipVertical={flipMap[0].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(0, val)}
+                        flipHorizontal={flipMap[0].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(0, val)}
                         deleteItem={() => handleDeleteItem(0)}
                         openSearch={() => openItemSearch(0)}
                       ></Item>
@@ -341,7 +360,11 @@ const CreateOutfit = () => {
                         scale={transformMap[1].scale}
                         setScale={(val) => setScaleAt(1, val)}
                         rotation={transformMap[1].rotation}
-                        setRotation={(val) => setRotationAt(0, val)}
+                        setRotation={(val) => setRotationAt(1, val)}
+                        flipVertical={flipMap[1].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(1, val)}
+                        flipHorizontal={flipMap[1].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(1, val)}
                         deleteItem={() => handleDeleteItem(1)}
                         openSearch={() => openItemSearch(1)}
                       ></Item>
@@ -362,6 +385,10 @@ const CreateOutfit = () => {
                         setScale={(val) => setScaleAt(2, val)}
                         rotation={transformMap[2].rotation}
                         setRotation={(val) => setRotationAt(2, val)}
+                        flipVertical={flipMap[2].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(2, val)}
+                        flipHorizontal={flipMap[2].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(2, val)}
                         item={selectedItems[2]}
                         deleteItem={() => handleDeleteItem(2)}
                         openSearch={() => openItemSearch(2)}
@@ -385,6 +412,10 @@ const CreateOutfit = () => {
                         setScale={(val) => setScaleAt(8, val)}
                         rotation={transformMap[8].rotation}
                         setRotation={(val) => setRotationAt(8, val)}
+                        flipVertical={flipMap[8].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(8, val)}
+                        flipHorizontal={flipMap[8].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(8, val)}
                         item={selectedItems[8]}
                         deleteItem={() => handleDeleteItem(8)}
                         openSearch={() => openItemSearch(8)}
@@ -409,6 +440,10 @@ const CreateOutfit = () => {
                           setScale={(val) => setScaleAt(4, val)}
                           rotation={transformMap[4].rotation}
                           setRotation={(val) => setRotationAt(4, val)}
+                          flipVertical={flipMap[4].vertical}
+                            setFlipVertical={(val)=>setVerFlipAt(4, val)}
+                            flipHorizontal={flipMap[4].horizontal}
+                            setFlipHorizontal={(val)=>setHorFlipAt(4, val)}
                           deleteItem={() => handleDeleteItem(4)}
                           openSearch={() => openItemSearch(4)}
                         ></Item>
@@ -430,7 +465,11 @@ const CreateOutfit = () => {
                           scale={transformMap[7].scale}
                           setScale={(val) => setScaleAt(7, val)}
                           rotation={transformMap[7].rotation}
-                          setRotation={(val) => setRotationAt(0, val)}
+                          setRotation={(val) => setRotationAt(7, val)}
+                          flipVertical={flipMap[7].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(7, val)}
+                        flipHorizontal={flipMap[7].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(7, val)}
                           deleteItem={() => handleDeleteItem(7)}
                           openSearch={() => openItemSearch(7)}
                         ></Item>
@@ -456,6 +495,10 @@ const CreateOutfit = () => {
                           setScale={(val) => setScaleAt(3, val)}
                           rotation={transformMap[3].rotation}
                           setRotation={(val) => setRotationAt(3, val)}
+                          flipVertical={flipMap[3].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(3, val)}
+                        flipHorizontal={flipMap[3].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(3, val)}
                           deleteItem={() => handleDeleteItem(3)}
                           openSearch={() => openItemSearch(3)}
                         ></Item>
@@ -478,6 +521,10 @@ const CreateOutfit = () => {
                           setScale={(val) => setScaleAt(6, val)}
                           rotation={transformMap[6].rotation}
                           setRotation={(val) => setRotationAt(6, val)}
+                          flipVertical={flipMap[6].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(6, val)}
+                        flipHorizontal={flipMap[6].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(6, val)}
                           deleteItem={() => handleDeleteItem(6)}
                           openSearch={() => openItemSearch(6)}
                         ></Item>
@@ -500,6 +547,10 @@ const CreateOutfit = () => {
                         setScale={(val) => setScaleAt(5, val)}
                         rotation={transformMap[5].rotation}
                         setRotation={(val) => setRotationAt(5, val)}
+                        flipVertical={flipMap[5].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(5, val)}
+                        flipHorizontal={flipMap[5].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(5, val)}
                         deleteItem={() => handleDeleteItem(5)}
                         openSearch={() => openItemSearch(5)}
                       ></Item>
@@ -523,6 +574,10 @@ const CreateOutfit = () => {
                         setScale={(val) => setScaleAt(9, val)}
                         rotation={transformMap[9].rotation}
                         setRotation={(val) => setRotationAt(9, val)}
+                        flipVertical={flipMap[9].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(9, val)}
+                        flipHorizontal={flipMap[9].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(9, val)}
                         deleteItem={() => handleDeleteItem(9)}
                         openSearch={() => openItemSearch(9)}
                       ></Item>
@@ -544,6 +599,10 @@ const CreateOutfit = () => {
                         setScale={(val) => setScaleAt(10, val)}
                         rotation={transformMap[10].rotation}
                         setRotation={(val) => setRotationAt(10, val)}
+                        flipVertical={flipMap[10].vertical}
+                        setFlipVertical={(val)=>setVerFlipAt(10, val)}
+                        flipHorizontal={flipMap[10].horizontal}
+                        setFlipHorizontal={(val)=>setHorFlipAt(10, val)}
                         deleteItem={() => handleDeleteItem(10)}
                         openSearch={() => openItemSearch(10)}
                       ></Item>
