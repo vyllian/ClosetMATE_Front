@@ -5,7 +5,7 @@ import { TouchableHighlight, View } from "react-native"
 
 export const TopNavigation = (({arrowAction, binAction}:{arrowAction:() => void, binAction?:() => void})=>{
     return(
-        <View className='flex-row justify-between items-center w-11/12 absolute top-2 left-2'>
+        <View className='flex-row justify-between items-center w-11/12 absolute top-2 left-2 z-20'>
         <TouchableHighlight onPress={arrowAction} underlayColor='trasperent' className='size-fit'>
             <AntDesign name="arrowleft" size={32} color="black" />
         </TouchableHighlight>

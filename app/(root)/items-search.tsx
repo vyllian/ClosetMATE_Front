@@ -103,6 +103,32 @@ const ItemsSearch = () => {
         handleSearch();
         toggleFilters();
     };
+
+    const useItem= async()=>{
+        if (!item) return;
+        const positionMap: Record<string, number> = {
+            top: 3,
+            bottom: 6,
+            outer: 5,
+            shoes: 9,
+            accessory: 0
+        };
+        let position = positionMap[item.category];
+        if (position===0){
+            if (["bag","purse", "backpack", "tights", "bodychain", "belt"].includes(item.type)){
+                position=8;
+            } else if (["gloves", "tie"].includes(item.type)){
+                position=0;
+            } else if (["glasses", "jewerly", "neckerchief"].includes(item.type)){
+                position=1;
+            } else if (["scarf"].includes(item.type)){
+                position=2;
+            }else position = 10;
+        }
+
+        router.push({pathname:'/create-outfit', params: {passedItems: JSON.stringify([{ position, item }])}});
+              
+    }
      
       
     return(
@@ -118,11 +144,9 @@ const ItemsSearch = () => {
             <ScrollView contentContainerStyle={{ flexGrow:1, justifyContent:'flex-start', alignContent:'center' }}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag" >
-                {/* <TouchableHighlight  underlayColor='transperent' onPress={()=>router.push('/')}>
-                    <Image  source={icons.logo} className="size-32" resizeMode="contain"/>
-                    </TouchableHighlight> */}
+        
                 <TopNavigation arrowAction={()=>router.push('/wardrobe')}/>
-                <View className='mt-40 items-center gap-4 w-11/12 justify-center content-center mx-auto relative'>
+                <View className='mt-16 items-center gap-4 w-11/12 justify-center content-center mx-auto relative'>
                     <Text className="font-philosopher-bold text-2xl text-center">{title}</Text>
                     {filtersShown && (
                         <View className=' pt-16 pb-5 px-3 w-full  absolute -top-2 left-0 rounded-xl bg-white z-50'>
@@ -267,7 +291,7 @@ const ItemsSearch = () => {
                                     </Text>
                                 </View>
                                 <View className='px-4 w-full mt-4 flex-row'>
-                                    <MainButton text='Використати' onPress={()=>router.push('/')} />
+                                    <MainButton text='Використати' onPress={()=>useItem()} />
                                 </View>
                             </View>
                         </View>

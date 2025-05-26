@@ -20,7 +20,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFDCEF"
       },
-      "permissions": ["READ_MEDIA_IMAGES", "WRITE_EXTERNAL_STORAGE"]
+      "permissions": [
+        "READ_MEDIA_IMAGES",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -56,7 +59,10 @@
           "cameraPermission":"Allow $(PRODUCT_NAME) to access your camera."
         }
       ],
-      ["expo-media-library"]
+      [
+        "expo-media-library"
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

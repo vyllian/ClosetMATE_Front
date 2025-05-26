@@ -9,9 +9,7 @@ import { View, Text, ActivityIndicator, SafeAreaView, ScrollView, Image, Touchab
 const Wardrobe = () => {
     const {profile, loading, setProfile } = useProfile();
 
-    const tem= async()=>{
-
-    }
+    
       
     return(
         <SafeAreaView className='px-5 h-full bg-primary ' >

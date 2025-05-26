@@ -24,23 +24,15 @@ const Profile = () => {
     const {auth, loading:authLoading} = useAuth();
     const { user, loading:userLoading, error } = useUser();
     
-
     const [image, setImage] =useState<string | null>(null); 
     const [imageLoading, setImageLoading] =useState(true); 
     const [setShown, setSetShown] = useState(false);
-    const [favourite, setFavourite] = useState(false);
-    // const [itemsShown, setItemsShown] = useState(false);
-
-  
-   
+    const [favourite, setFavourite] = useState(false);  
     
     useEffect(()=>{
-        console.log('here');
-
         if(!profile || authLoading){
             return;
         }
-        console.log('here1');
 
         if (!profile.image) {
             setImageLoading(false);
@@ -49,7 +41,6 @@ const Profile = () => {
         if(moment(profile.urlExpiryDate)>moment()){
             setImageLoading(false);
             setImage(profile.publicUrl);
-            console.log('here2');
             
         }else{
             const fetchUrl = async()=>{
@@ -63,14 +54,12 @@ const Profile = () => {
                                 'Authorization': `Basic ${auth}`,
                             },
                     });
-                    console.log("2");
                     
                     if (!response.ok){
                         console.log(response.status);
                         
                         throw new Error("Помилка отримання фото for profile");
                     }
-                    console.log("3");
                     
                     const imageUrl = await response.text(); 
                     setImage(imageUrl);
