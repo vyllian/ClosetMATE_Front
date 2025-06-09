@@ -59,13 +59,8 @@ const SignIn = () =>{
             setErrorMessage(error.message); 
         }
     };
-    // const resetPassword = async()=>{
-    //     try {
-            
-    //     } catch (error) {
-            
-    //     }
-    // }
+    const resetPassword = async()=>{
+    }
 
 
     return(
@@ -89,9 +84,9 @@ const SignIn = () =>{
                     <View className='flex-row'>
                         <MainButton text='Увійти' onPress={()=>handleLogin()} />
                     </View>
-                    {/* <TouchableHighlight onPress={()=>resetPassword()}>
+                    <TouchableHighlight onPress={()=>resetPassword()}>
                         <Text>Забули пароль?</Text>
-                    </TouchableHighlight> */}
+                    </TouchableHighlight>
                     <Text className='text-center font-philosopher text-bage text-black-200'>Натискаючи «Увійти», ви погоджуєтеся з нашими 
                         <Link href={"/terms-of-use"} className=' font-philosopher-bold text-black-100'> Умовами надання послуг</Link> та <Link href={'/privacy-policy'} className='text-black-100 font-philosopher-bold'>Політикою конфіденційності</Link>
                     </Text>

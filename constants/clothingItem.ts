@@ -10,7 +10,7 @@ type ClothingItem = {
         material: string; 
         mood: string; 
         pattern: string; 
-        public_url: string;
+        publicUrl: string;
         purpose: string;
         season:string
         style: string;

@@ -92,16 +92,13 @@ useEffect(() => {
   console.log('beeeeee');
   
   if (passedItems) {
-    // Розпаковуємо передані елементи в об'єкт із ключами
-    const parsedItems = JSON.parse(passedItems as string); // Перевіряємо, якщо це строка JSON
+    const parsedItems = JSON.parse(passedItems as string) as Record<string, ClothingItem>;
     console.log(parsedItems);
     
     if (itemsPositions) {
       setSelectedItems((prev) => ({ ...prev, ...parsedItems }));
-      // Розпаковуємо позиції
       const parsedPositions = JSON.parse(itemsPositions as string);
 
-      // Важливо! itemsPositions має бути масивом з 4 елементів: [zOrderMap, editMap, transformMap, flipMap]
       const [zOrder, editMap, transform, flip] = parsedPositions;
 
       if (zOrder) setZOrderMap((prev) => ({ ...prev, ...zOrder }));
@@ -111,15 +108,15 @@ useEffect(() => {
     } else{
       console.log('ceeeee');
       
-      parsedItems.forEach((el:{ item: ClothingItem; position: number }) => {
-        handleSetItem(el.item, el.position)        
-      });
+      Object.entries(parsedItems).forEach(
+        ([position, item]: [string, ClothingItem]) => {
+          handleSetItem(item, Number(position));
+        }
+      );
     }
   }
 }, []);
-console.log(selectedItems);
 
-//-------------------------------------------------------------------------------------
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };

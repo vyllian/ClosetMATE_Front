@@ -16,6 +16,10 @@ import { API } from '@/constants/api';
 import { useAuth } from '@/lib/useAuth';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import moment from 'moment';
+import Outfit from '@/constants/outfitType';
+import { SmallItemPreview } from '@/components/itemsPreview';
+import { TopNavigation } from '@/components/topNavigation';
+import Feather from '@expo/vector-icons/Feather';
 
 
 
@@ -28,6 +32,10 @@ const Profile = () => {
     const [imageLoading, setImageLoading] =useState(true); 
     const [setShown, setSetShown] = useState(false);
     const [favourite, setFavourite] = useState(false);  
+    const [outfits, setOutfits] = useState<Outfit[]>([]);
+    const [filteredOutfits, setFilteredOutfits] = useState<Outfit[]>([]);
+    const [showOutfitOptions, setShowOutfitOptions] = useState(false);
+    const [chosenOutfit, setChosenOutfit] = useState<Outfit>();
     
     useEffect(()=>{
         if(!profile || authLoading){
@@ -72,12 +80,45 @@ const Profile = () => {
             fetchUrl();
             setImageLoading(false);
         }
-
-        //зафетчити аутфіти
-
+        fetchOutfits();
         
-    }, [authLoading, imageLoading]);
+    }, [ imageLoading, authLoading]);
+    const fetchOutfits = async()=>{
+        try {
+            const response = await fetch(API + '/profile/'+profile.id+'/outfits', {
+                method: "GET",
+                headers: {
+                Authorization: `Basic ${auth}`,
+                },
+            });
+
+            if (!response.ok) {
+                console.log(response.status, response);
+                
+                throw new Error('Cannot fetch outfits');
+            }
+            const data = await response.json();       
+            setOutfits(data);  
+            setFilteredOutfits(data);
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+        
+    }
     
+    useEffect(()=>{
+        if(favourite){
+            console.log(favourite);
+            const out = outfits.filter((outfit)=>outfit.favourite)
+            console.log(out);
+            
+            setFilteredOutfits(out);
+        }else {
+            console.log(favourite);
+            setFilteredOutfits(outfits);
+        }
+    }, [favourite])
     
     const toggleSettings = async()=>{
         setSetShown(!setShown);
@@ -92,6 +133,48 @@ const Profile = () => {
         Alert.alert('Вихід виконано');
         router.replace('/sign-in');
     };
+    
+      const toggleOutfit = ()=>{
+        setShowOutfitOptions(!showOutfitOptions)
+      }
+      const deleteOutfit = async (outfitId: string, onFinish?: () => void) => {
+            try {
+              const response = await fetch(`${API}/outfit/delete/${outfitId}`, {
+                method: 'DELETE',
+                headers: {
+                  Authorization: `Basic ${auth}`,
+                },
+              });
+              if (!response.ok) throw new Error('Помилка delete item');
+            } catch (error: any) {
+              console.error(error.message);
+            } 
+            setShowOutfitOptions(false);
+            fetchOutfits();
+      };
+    
+      const addOutfitToFav = async () => {
+        if (!chosenOutfit) return;
+        
+            try {
+              const response = await fetch(`${API}/profile/${profile.id}/set-outfit-fav?outfit-id=${chosenOutfit.id}&fav=${!chosenOutfit.favourite}`, {
+                method: 'PUT',
+                headers: {
+                  Authorization: `Basic ${auth}`,
+                },
+              });
+              if (!response.ok) throw new Error('Помилка add to fav item');
+            } catch (error: any) {
+              console.error(error.message);
+            }
+            chosenOutfit.favourite = !chosenOutfit.favourite
+            fetchOutfits();
+      };
+    
+      const editOutfit = ()=>{
+        router.push({pathname:'/(root)/create-outfit', params:{passedItems: JSON.stringify(outfits)}});
+      }
+    
 
     return (
         <SafeAreaView className=' h-full bg-primary '>
@@ -161,15 +244,58 @@ const Profile = () => {
                         )}
                     </TouchableHighlight>
                 </View>
-                <View className='flex-1 bg-white'>
-                    {/* {profile.profile_outfits.lenght===0 &&(
-                        <Text>Створіть образ</Text>
-                    )} */}
-
+                <ScrollView style={{flexGrow:1, height:'100%', backgroundColor:"white", paddingTop: 10, width:"100%"}}>
+                <View className=' flex-row flex-wrap gap-6 content-start justify-start items-start w-11/12  mx-auto'>
+                    {filteredOutfits.length===0 ? (
+                        <Text className="font-philosopher text-black-100 text-xl self-center ml-28">Немає створених образів</Text>
+                    ):(
+                        filteredOutfits.reverse().map((outfit, i)=>(
+                            <SmallItemPreview image={outfit.publicUrl} favourite={outfit.favourite} onPress={()=>{setChosenOutfit(outfit),toggleOutfit()}} />
+                        ))
+                    )}
 
                 </View>
+                </ScrollView>
             </ScrollView>
             )}
+             {(showOutfitOptions && chosenOutfit) && (
+                        <View className='absolute  items-center justify-center  inset-0 bg-black/30 backdrop-blur-xl'>
+                            <View className='bg-primary w-11/12 pt-8 pb-4 items-center justify-center  z-50 rounded-lg  shadow-xl shadow-black-200[06]'>
+                                <TopNavigation arrowAction={()=>{toggleOutfit(), fetchOutfits()}} binAction={()=>deleteOutfit(chosenOutfit.id)}></TopNavigation>
+                                <View className='bg-white w-full items-center p-2 pt-4 mt-5'>
+                                    <Image  source={{uri:chosenOutfit?.publicUrl}} className='size-48' resizeMode='contain'/>
+                                    <View className='flex-row justify-between w-full px-1'>
+                                        <TouchableHighlight onPress={()=>editOutfit()} underlayColor='transperent'>
+                                            <Feather name="edit-3" size={30} color="black" />
+                                        </TouchableHighlight>
+                                        <TouchableHighlight onPress={()=>addOutfitToFav()} underlayColor='transperent'>
+                                        {chosenOutfit.favourite ? (
+                                            <MaterialIcons name="favorite" size={32} color="#fb3f4a" />
+                                        ):(
+                                            <MaterialIcons name="favorite-border" size={32} color="#fb3f4a" />
+                                        )}
+                                        </TouchableHighlight>
+                                    </View>
+                                </View>
+                                <View className='gap-1 mx-4'>
+                                    <Text className='font-philosopher text-xl'>
+                                                                            <Text className='font-philosopher-bold text-center'>Опис: </Text> 
+                                                                            {chosenOutfit.description.length===0 ? 
+                                                                            "-" :
+                                                                            chosenOutfit.description}
+                                                                        </Text>
+                                    <Text className='font-philosopher text-xl text-center'>
+                                        <Text className='font-philosopher-bold'>Дати: </Text>
+                                        {chosenOutfit.planningToWear.map((date, i)=>(
+                                          <Text key={i}>{date.toString()}</Text>
+                                        ))}
+                                    </Text>
+                                    
+                                </View>
+                                
+                            </View>
+                        </View>
+                    )}
         </SafeAreaView>
     )
 }

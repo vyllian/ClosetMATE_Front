@@ -128,7 +128,7 @@ const ItemsSearch = ({ onClose, setItem }:{ onClose:()=>void, setItem:(it:Clothi
                     filteredClothes.map((item) => (
                       <SmallItemPreview
                         key={item.id}
-                        image={item.public_url}
+                        image={item.publicUrl}
                         favourite={item.favourite}
                         onPress={() => setItem(item)}
                       />

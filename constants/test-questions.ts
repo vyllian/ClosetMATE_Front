@@ -25,50 +25,50 @@ export const testQuestions = [
     ],
   },
   {
-    question: "Який вайб ти наслідуєш?",
+    question: "Який сьогодні у тебе вайб?",
     options: [
       {
-        text: "містична загадковість",
+        text: "загадковість",
         image: require("../assets/images/test/mysterious.png"),
         result: { style: "romaitic" },
       },
       {
-        text: "природна простота",
+        text: "простота",
         image: require("../assets/images/test/growth.png"),
         result: { style: "casual" },
       },
       {
-        text: "витонченість і стриманість",
+        text: "стриманість",
         image: require("../assets/images/test/vintage.png"),
         result: { style: "minimalist" },
       },
       {
-        text: "елегантна розкіш",
+        text: "елегантність",
         image: require("../assets/images/test/actress.png"),
         result: { style: "classic" },
       },
     ],
   },
   {
-    question: "Як би ти описав(-ла) свій бажаний ритм?",
+    question: "Який сьогоднішній ритм?",
     options: [
       {
-        text: "плавний і рівний",
+        text: "плавний",
         image: require("../assets/images/test/calm.png"),
         result: { pattern: "plain" },
       },
       {
-        text: "з чітким пульсом",
+        text: "чіткий",
         image: require("../assets/images/test/busy.png"),
         result: { pattern: "striped" },
       },
       {
-        text: "органічний і хаотичний",
+        text: "хаотичний",
         image: require("../assets/images/test/employee.png"),
         result: { pattern: "tiedyed" },
       },
       {
-        text: "ритмічний і повторюваний",
+        text: "повторюваний",
         image: require("../assets/images/test/metronome.png"),
         result: { pattern: "checked" },
       },
@@ -88,7 +88,7 @@ export const testQuestions = [
         result: { formality: "semiformal" },
       },
       {
-        text: "диско",
+        text: "поп",
         image: require("../assets/images/test/disco-ball.png"),
         result: { formality: "casual" },
       },
@@ -103,79 +103,79 @@ export const testQuestions = [
     question: "Яке місце найбільше підходить?",
     options: [
       {
-        text: "місце для натхнення і спокою",
+        text: "дім",
         image: require("../assets/images/test/shelf.png"),
         result: { purpose: "home_party" },
       },
       {
-        text: "зустрічі з друзями",
+        text: "парк",
         image: require("../assets/images/test/park.png"),
         result: { purpose: "walk" },
       },
       {
-        text: "офіс або важливі справи",
+        text: "офіс",
         image: require("../assets/images/test/workspace.png"),
         result: { purpose: "office_job" },
       },
       {
-        text: "нічне місто або вечірка",
+        text: "вечірка",
         image: require("../assets/images/test/dance.png"),
         result: { purpose: "going_out" },
       },
     ],
   },
   {
-    question: "Які у тебе плани на цей день?",
+    question: "Яка функціональність сьогоднішнього одягу?",
     options: [
       {
-        text: "повна свобода і комфорт",
+        text: "комфорт",
         image: require("../assets/images/test/yoga-pose.png"),
         result: { material: "cotton" },
       },
       {
-        text: "щось тепле і м’яке",
+        text: "затишок",
         image: require("../assets/images/test/comfort.png"),
         result: { material: "cashmere" },
       },
       {
-        text: "легкість і дихаючі тканини",
+        text: "легкість",
         image: require("../assets/images/test/hot.png"),
         result: { material: "linen" },
       },
       {
-        text: "захист і функціональність",
+        text: "захист",
         image: require("../assets/images/test/wind.png"),
         result: { material: "nylon" },
       },
     ],
   },
   {
-    question: "Бажана сезоність",
+    question: "Що ти хочеш транслювати?",
     options: [
       {
-        text: "тепло, сонячно",
+        text: "хороший настрій",
         image: require("../assets/images/test/sun.png"),
         result: { season: "summer" },
       },
       {
-        text: "прохолодна весна/осінь",
+        text: "безтурботність",
         image: require("../assets/images/test/old-woman.png"),
         result: { season: "spring" },
       },
       {
-        text: "похмуро і вітряно",
+        text: "непохитність",
         image: require("../assets/images/test/windy.png"),
         result: { season: "fall" },
       },
       {
-        text: "морози і сніг",
+        text: "переживання",
         image: require("../assets/images/test/cold.png"),
         result: { season: "winter" },
       },
     ],
   },
   {
-    question: "Враховуємо погоду,",
+    question: "Враховуємо погоду?",
     options: [
       {
         text: "Так",

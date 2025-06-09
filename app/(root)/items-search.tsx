@@ -197,7 +197,7 @@ const ItemsSearch = () => {
                         {filteredClothes.length > 0 ? 
                         (
                             filteredClothes.map(item => (
-                                <SmallItemPreview key ={item.id} image={item.public_url} favourite={item.favourite} onPress={()=>setItem(item)}   />
+                                <SmallItemPreview key ={item.id} image={item.publicUrl} favourite={item.favourite} onPress={()=>setItem(item)}   />
                             ))
                         ):(
                             <Text className='font-philosopher text-xl text-black-200 absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2'>Одяг не знайдено</Text>
@@ -212,7 +212,7 @@ const ItemsSearch = () => {
                             <View className='bg-primary w-11/12 pt-8 pb-4 items-center justify-center  z-50 rounded-lg  shadow-xl shadow-black-200[06]'>
                                 <TopNavigation arrowAction={()=>toggleDetails()} binAction={()=>deleteItem(item.id)}></TopNavigation>
                                 <View className='bg-white w-full items-center p-2 pt-4 mt-5'>
-                                    <Image  source={{uri:item?.public_url}} className='size-48' resizeMode='contain'/>
+                                    <Image  source={{uri:item?.publicUrl}} className='size-48' resizeMode='contain'/>
                                     <View className='flex-row justify-between w-full px-1'>
                                         <TouchableHighlight onPress={()=>router.push({pathname:'/(root)/create-item', params:{itemEdit: JSON.stringify(item)}})} underlayColor='transperent'>
                                             <Feather name="edit-3" size={30} color="black" />

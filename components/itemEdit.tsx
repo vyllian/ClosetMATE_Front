@@ -62,7 +62,7 @@ export const Item = (
     useEffect(() => {
         if (!item) return;
         Image.getSize(
-          item.public_url,
+          item.publicUrl,
           (width, height) => {
             const newSize = resizeImage(width, height, {width: bg[0].width})
             setSize(newSize);
@@ -150,7 +150,7 @@ export const Item = (
                 <TouchableHighlight onPress={()=>{setActivePosition(); if (!item) openSearch();}} onLongPress={item ? ()=>toggleEdit() : ()=>{}} underlayColor='trasperent'>
                     {item ? (
                     
-                      <Image source={{uri: item.public_url}} style={{width: size?.width, height: size?.height}} resizeMode='contain'/>
+                      <Image source={{uri: item.publicUrl}} style={{width: size?.width, height: size?.height}} resizeMode='contain'/>
                     ):(
                     <ImageBackground source={bg[0].image} style={{width: bg[0].width, height: bg[0].height}} className='justify-center items-center'>
                         <AntDesign name="pluscircleo" size={12} color="black" className='bg-white rounded-full  '/>

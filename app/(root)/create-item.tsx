@@ -100,10 +100,10 @@ const CreateItem = () => {
             setPurpose(parsedItem.purpose);
             setStyle(parsedItem.style);
             setImgName(parsedItem.image);
-            setImgUrl(parsedItem.public_url);
+            setImgUrl(parsedItem.publicUrl);
             setImgDate(parsedItem.url_expiry_date);
 
-            setImage(parsedItem.public_url);  
+            setImage(parsedItem.publicUrl);  
             setInputDisabled(false);
         
     },[itemEdit]);

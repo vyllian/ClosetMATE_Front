@@ -32,7 +32,8 @@ const Test = () => {
   const { profile, loading: profileLoading, setProfile } = useProfile();
   const { auth, loading: authLoading } = useAuth();
   const { date } = useLocalSearchParams();
-  const [selectedDate] = useState<string>(formatDate(new Date(date as string)));
+  
+  const [selectedDate, setSelected] = useState<string>(formatDate(new Date(date as string)));
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [showButton, setShowButton] = useState(false);
@@ -76,14 +77,12 @@ const Test = () => {
   const sendResults = async () => {
     let location;
     if (includeWeather) {
-      // Запит на доступ до геолокації
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.log("Доступ до локації заборонено");
       } else {
         location = await Location.getCurrentPositionAsync({});
-        // setLat(location.coords.latitude);
-        // setLon(location.coords.longitude);
+        
       }
     }
     const answersBody: { [key: string]: number } = {};
@@ -96,7 +95,7 @@ const Test = () => {
           "/outfit/generate?id=" +
           profile.id +
           "&date=" +
-          selectedDate +
+          selectedDate.toString() +
           "&lat=" +
           (location ? location.coords.latitude : 0 )+
           "&lon=" +
@@ -116,12 +115,13 @@ const Test = () => {
         throw new Error("Помилка generate");
       }else{
         const responseJSON = await response.json();
-        router.push({pathname:"/(root)/choose-outfit", params:{outfits: JSON.stringify(responseJSON)}})
+        router.push({pathname:"/(root)/choose-outfit", params:{outfits: JSON.stringify(responseJSON), date:date}})
       }
     } catch (error: any) {
       console.log(error.message);
     } 
   };
+  
 
   return (
     <SafeAreaView className="px-5 h-full bg-primary relative w-screen">

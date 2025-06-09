@@ -10,37 +10,49 @@ import { useProfile } from "@/components/ProfileContext";
 import { removeAuth } from "@/lib/authService";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import icons from "@/constants/icons";
-import { PlusButton } from "@/components/customButton";
+import { MainButton, PlusButton } from "@/components/customButton";
 import { CalendarComponent } from "@/components/calendar";
 import dayjs from "dayjs";
 import { API } from "@/constants/api";
 import Outfit from "@/constants/outfitType";
+import { TopNavigation } from "@/components/topNavigation";
+import Feather from "@expo/vector-icons/Feather";
 
 export default function Index() {
-  const {profile, loading , setProfile } = useProfile();
+  const {profile, loading:profileLoading , setProfile } = useProfile();
   const { auth, loading: authLoading } = useAuth();
 
   const { user, loading:userLoading } = useUser();
   const [outfits, setOutfits] = useState<Outfit[]>([]); 
+  const [loading, setLoading] = useState(false);
   const [planed, setPlaned] = useState<Record<string, { selected?: boolean }>>({});
   const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const [optionsShown, setOptionsShown] = useState(false);
+  const [showOutfitOptions, setShowOutfitOptions] = useState(false);
+  const [chosenOutfit, setChosenOutfit] = useState<Outfit>();
 
-  
+  const formatDate = (rawDate: Date) => {
+    let year = rawDate.getFullYear();
+    let month: string = (rawDate.getMonth() + 1).toString().padStart(2, "0");
+    let day: string = rawDate.getDate().toString().padStart(2, "0");
+    return `${day}-${month}-${year}`;
+  };
+
+
   useEffect(()=>{
     if (!user && !userLoading){      
       removeAuth();
       AsyncStorage.removeItem('user');
-      // router.replace('/sign-in');
     }
     if (user) {
-      fetchOutfits();
+      fetchOutfits();    
     }
   },[]);
 
   const fetchOutfits = async () => {
+    setLoading(true);
     try {
-      const response = await fetch(API + '/outfit/by-date?date='+dayjs(selectedDate).format('DD-MM-YYYY'), {
+      const response = await fetch(API + '/profile/outfits-by-date/'+profile.id+'?date='+dayjs(selectedDate).format('DD-MM-YYYY'), {
         method: "GET",
         headers: {
           Authorization: `Basic ${auth}`,
@@ -52,8 +64,8 @@ export default function Index() {
         
         throw new Error('Cannot fetch outfits');
       }
-      const data = await response.json(); 
-      setOutfits(data)  
+      const data = await response.json();       
+      setOutfits(data);  
       const mapped: Record<string, { selected?: boolean }> = {};
       data.forEach((outfit:Outfit) => {
         outfit.planningToWear.forEach((dateObj) => {
@@ -65,8 +77,11 @@ export default function Index() {
       setPlaned(mapped)
     } catch (error) {
       console.log(error);
-    }
+    } finally{
+      setLoading(false);
+    }      
   };
+
   useEffect(()=>{
     if (user)
       fetchOutfits();
@@ -76,9 +91,46 @@ export default function Index() {
     setOptionsShown(!optionsShown)
   }
 
+  const toggleOutfit = ()=>{
+    setShowOutfitOptions(!showOutfitOptions)
+  }
+  const deleteOutfit = async (outfitId: string, onFinish?: () => void) => {
+        try {
+          const response = await fetch(`${API}/outfit/delete/${outfitId}`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Basic ${auth}`,
+            },
+          });
+          if (!response.ok) throw new Error('Помилка delete item');
+        } catch (error: any) {
+          console.error(error.message);
+        } 
+  };
+
+  const addOutfitToFav = async () => {
+    if (!chosenOutfit) return;
+        try {
+          const response = await fetch(`${API}/profile/${profile.id}/set-outfit-fav?outfit-id=${chosenOutfit.id}`, {
+            method: 'PUT',
+            headers: {
+              Authorization: `Basic ${auth}`,
+            },
+          });
+          if (!response.ok) throw new Error('Помилка add to fav item');
+        } catch (error: any) {
+          console.error(error.message);
+        }
+        chosenOutfit.favourite = !chosenOutfit.favourite
+  };
+
+  const editOutfit = ()=>{
+    router.push({pathname:'/(root)/create-outfit', params:{passedItems: JSON.stringify(outfits)}});
+  }
+
   return (
     <SafeAreaView className='px-5 h-full bg-primary ' >    
-        {loading && (
+        {(profileLoading || loading) && (
             <View className="absolute top-0 left-0 right-0 bottom-0 bg-primary flex items-center justify-center z-50">
                 <ActivityIndicator size="large" color="#828282" />
             </View>
@@ -105,7 +157,7 @@ export default function Index() {
                 <ScrollView horizontal >
                   {outfits.map((outfit, i)=>(
                     <View key={i} className="size-20 border border-black-300 rounded-xl mr-3">
-                      <TouchableHighlight underlayColor='white' onPress={()=>{}} className="rounded-xl">
+                      <TouchableHighlight underlayColor='white' onPress={()=>{setChosenOutfit(outfit),toggleOutfit()}} className="rounded-xl">
                         <Image source={{uri:outfit.publicUrl}} className="w-full h-full" resizeMode="contain"/>
                       </TouchableHighlight>
                     </View>
@@ -127,6 +179,52 @@ export default function Index() {
                     </View>
                 )}
         </ScrollView>
+         {(showOutfitOptions && chosenOutfit) && (
+                        <View className='absolute  items-center justify-center  inset-0 bg-black/30 backdrop-blur-xl'>
+                            <View className='bg-primary w-11/12 pt-8 pb-4 items-center justify-center  z-50 rounded-lg  shadow-xl shadow-black-200[06]'>
+                                <TopNavigation arrowAction={()=>toggleOutfit()} binAction={()=>deleteOutfit(chosenOutfit.id)}></TopNavigation>
+                                <View className='bg-white w-full items-center p-2 pt-4 mt-5'>
+                                    <Image  source={{uri:chosenOutfit?.publicUrl}} className='size-72' resizeMode='contain'/>
+                                    <View className='flex-row justify-between w-full px-1'>
+                                        <TouchableHighlight onPress={()=>editOutfit()} underlayColor='transperent'>
+                                            <Feather name="edit-3" size={30} color="black" />
+                                        </TouchableHighlight>
+                                        <TouchableHighlight onPress={()=>addOutfitToFav()} underlayColor='transperent'>
+                                        {chosenOutfit.favourite ? (
+                                            <MaterialIcons name="favorite" size={32} color="#fb3f4a" />
+                                        ):(
+                                            <MaterialIcons name="favorite-border" size={32} color="#fb3f4a" />
+                                        )}
+                                        </TouchableHighlight>
+                                    </View>
+                                </View>
+                                <View className='gap-1'>
+                                    <Text className='font-philosopher text-xl'>
+                                        <Text className='font-philosopher-bold'>Опис: </Text> 
+                                        {chosenOutfit.description.length===0 ? 
+                                        "-" :
+                                        chosenOutfit.description}
+                                    </Text>
+                                    <Text className='font-philosopher text-xl '>
+                                        <Text className='font-philosopher-bold'>Дати: </Text>
+                                        {
+                                          chosenOutfit.planningToWear.length ===0 ?
+                                          (<Text> - </Text>) :
+                                          (
+                                          chosenOutfit.planningToWear.map((date, i)=>(
+                                            <Text key={i}>{date.toString()}</Text>
+                                          ))
+                                          )
+                                        }
+                                    </Text>
+                                    
+                                </View>
+                                
+                            </View>
+                        </View>
+                    )}
+
     </SafeAreaView>
+
   );
 }
