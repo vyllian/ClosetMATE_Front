@@ -1,50 +1,82 @@
-# Welcome to your Expo app 👋
+# ClosetMATE - AI-Powered Wardrobe Management Mobile App 
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Description
+ClosetMate is a full-stack mobile application that helps users digitize their wardrobe, automatically categorize clothes using AI, and plan daily outfits.
 
-## Get started
+The app combines computer vision, cloud storage, and a scalable REST backend to simplify wardrobe organization and outfit creation.
 
-1. Install dependencies
+Built as a pet project to practice React Native, TypeScript, backend development, and AI integrations in a real-world scenario.
 
-   ```bash
+## Features
+- 📸 Upload clothing photos from camera or gallery
+- ✂️ Automatic background removal and image preprocessing
+- 🤖 AI-based clothing recognition and categorization (OpenAI API)
+- 🗂 Digital wardrobe management
+- 👕 Interactive outfit builder with drag-and-drop canvas
+- 📅 Outfit planning and saving
+- ☁️ Cloud image storage (AWS S3)
+- 🔐 Authentication and REST API integration
+
+## Stack
+### Frontend:
+- React Native
+- TypeScript
+- Expo
+### Backend:
+- Spring Boot (Java)
+- REST API
+### Cloud & Services:
+- OpenAI API (image categorization)
+- OpenWeatherMap API (weather forecast for outfits generation)
+- AWS S3 (file storage)
+
+## Screenshots
+### Main Pages
+<img width="287" height="558" alt="image" src="https://github.com/user-attachments/assets/44ae9b7c-4719-47cd-a95a-b5118d57e10f" />
+<img width="274" height="562" alt="image" src="https://github.com/user-attachments/assets/dd968542-4159-4489-a9ab-f490fae590d0" />
+<img width="280" height="564" alt="image" src="https://github.com/user-attachments/assets/824dbda4-0836-4da8-9fea-aec59841ae78" />
+
+
+### Example of adding clothes to canvas
+<img width="293" height="594" alt="image" src="https://github.com/user-attachments/assets/2ff3fe7d-24d7-45bb-9cdc-9a4a2bbbe70e" />
+<img width="296" height="594" alt="image" src="https://github.com/user-attachments/assets/61fe8ca9-642c-4a56-8646-20d6fda463ea" />
+<img width="292" height="588" alt="image" src="https://github.com/user-attachments/assets/5f8c3272-d84c-496b-8f62-2f81381ce855" />
+
+### Example of generating outfits
+<img width="283" height="566" alt="image" src="https://github.com/user-attachments/assets/4c966ad8-ed57-4d97-ba01-25c346d50c60" />
+<img width="282" height="570" alt="image" src="https://github.com/user-attachments/assets/37415849-af42-490a-8d8e-acf4335c17cd" />
+
+
+## How to Run
+1. Clone repositories
+   ```
+   git clone https://github.com/vyllian/closetMATE.git 
+   git clone https://github.com/vyllian/ClosetMATE_Front.git
+   ```
+2.	Server Side
+
+Go to closetMATE/src/main/resources. Create «application.properties» with personal secret API keys.
+
+3. Database
+   ```
+      docker compose up -d
+   ```
+4. Client Side
+
+Go to api.ts, put your IP address there, then go to closetMATE_Front, run:
+   ```
    npm install
+   npx expo start
    ```
 
-2. Start the app
+## Challenges
+During development I worked on:
+- Integrating AI services (OpenAI API) for automatic categorization
+- Designing RESTful APIs and client–server communication
+- Handling large image uploads and cloud storage (AWS S3)
+- Building an interactive drag-and-drop canvas UI
+- Structuring a full-stack project with clear separation of concerns
+- Managing async operations and network states in mobile apps
+- Improving performance and user experience
 
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+This project helped me gain hands-on experience with real production-like architecture and full-stack development.
