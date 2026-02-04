@@ -8,14 +8,14 @@ The app combines computer vision, cloud storage, and a scalable REST backend to 
 Built as a pet project to practice React Native, TypeScript, backend development, and AI integrations in a real-world scenario.
 
 ## Features
-- 📸 Upload clothing photos from camera or gallery
-- ✂️ Automatic background removal and image preprocessing
-- 🤖 AI-based clothing recognition and categorization (OpenAI API)
-- 🗂 Digital wardrobe management
-- 👕 Interactive outfit builder with drag-and-drop canvas
-- 📅 Outfit planning and saving
-- ☁️ Cloud image storage (AWS S3)
-- 🔐 Authentication and REST API integration
+- Upload clothing photos from camera or gallery
+- Automatic background removal and image preprocessing
+- AI-based clothing recognition and categorization (OpenAI API)
+- Digital wardrobe management
+- Interactive outfit builder with drag-and-drop canvas
+- Outfit planning and saving
+- Cloud image storage (AWS S3)
+- Authentication and REST API integration
 
 ## Stack
 ### Frontend:
